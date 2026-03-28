@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aubin — Product Builder</title>
+<style>
+/* ══════════════════════════════════════════
+   BASE — Apple HIG: 8pt grid, SF Pro stack
+══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nav:48px;
+  --e1:cubic-bezier(0,.55,.45,1);
+  --e2:cubic-bezier(.76,0,.24,1);
+  --e3:cubic-bezier(.34,1.56,.64,1);
+  --e4:cubic-bezier(0.16,1,0.3,1);
+  --e5:cubic-bezier(.42,0,.58,1);
+  --max:980px;
+  --g1:rgba(255,255,255,.05);
+  --g2:rgba(255,255,255,.08);
+  --t1:rgba(255,255,255,.92);
+  --t2:rgba(255,255,255,.56);
+  --t3:rgba(255,255,255,.36);
+  --t4:rgba(255,255,255,.22);
+}
+html{overflow-x:hidden;scroll-behavior:auto}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",
+    "Helvetica Neue",sans-serif;
+  background:#000;color:#fff;overflow-x:hidden;cursor:none;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:rgba(255,255,255,.15)}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ══ CURSOR ══ */
+#cur{position:fixed;width:5px;height:5px;background:#fff;border-radius:50%;
+  pointer-events:none;z-index:9999;transform:translate(-50%,-50%);
+  mix-blend-mode:difference;transition:width .18s var(--e1),height .18s var(--e1)}
+#cur2{position:fixed;width:36px;height:36px;border:1px solid rgba(255,255,255,.25);
+  border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);
+  transition:width .4s var(--e4),height .4s var(--e4),border-color .25s,opacity .25s}
+body.ch #cur{width:8px;height:8px}
+body.ch #cur2{width:52px;height:52px;border-color:rgba(255,255,255,.55)}
+
+/* ══ PRELOADER ══ */
+#ld{position:fixed;inset:0;background:#000;z-index:99999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  transition:opacity 1s var(--e2),visibility 1s}
+#ld.out{opacity:0;visibility:hidden;pointer-events:none}
+.ld-name{font-size:22px;font-weight:600;letter-spacing:-.2px;
+  opacity:0;animation:fadeIn .6s .15s var(--e4) forwards}
+.ld-role{font-size:11px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;
+  opacity:0;animation:fadeIn .5s .35s var(--e4) forwards}
+.ld-bar{width:120px;height:2px;background:rgba(255,255,255,.06);overflow:hidden;border-radius:1px}
+.ld-fill{height:100%;background:linear-gradient(90deg,rgba(255,255,255,.7),rgba(255,255,255,.2));
+  border-radius:1px;width:0;animation:ldFill 1.1s .5s var(--e5) forwards}
+@keyframes ldFill{to{width:100%}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);filter:blur(4px)}
+  to{opacity:1;transform:none;filter:blur(0)}}
+
+/* ══ BG + NOISE ══ */
+#gbg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  transition:background 1.6s var(--e2);background:#000}
+#noise{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+#cv{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.85}
+
+/* ══ NAV — Apple glass ══ */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:9000;
+  background:rgba(22,22,22,.72);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 max(22px,env(safe-area-inset-left));
+  transform:translateY(-100%);transition:transform .8s var(--e4)}
+nav.show{transform:translateY(0)}
+.nl{font-size:16px;font-weight:600;letter-spacing:-.3px;color:var(--t1)}
+.nr{display:flex;gap:24px;list-style:none}
+.nr a{color:var(--t3);text-decoration:none;font-size:12px;font-weight:400;
+  letter-spacing:.1px;transition:color .25s;position:relative;padding:4px 0;cursor:none}
+.nr a::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:.5px;
+  background:#fff;transform:scaleX(0);transform-origin:right;
+  transition:transform .35s var(--e2)}
+.nr a:hover,.nr a.on{color:var(--t1)}
+.nr a.on::after,.nr a:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* ══ ALL SECTIONS ══ */
+section{position:relative;z-index:10}
+
+/* ══ HERO — cinematic intro ══ */
+.hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:96px 24px 120px;overflow:hidden}
+
+.hero-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 16px;border-radius:980px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
+  font-size:11px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--t3);margin-bottom:40px;
+  opacity:0;animation:fadeUp .7s .7s var(--e4) forwards}
+.hero-pill-dot{width:5px;height:5px;border-radius:50%;
+  background:linear-gradient(135deg,#7c3aed,#06b6d4);
+  animation:dot-pulse 2.8s ease-in-out infinite}
+@keyframes dot-pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+
+.ht{font-size:clamp(48px,9vw,112px);font-weight:700;letter-spacing:clamp(-2px,-0.04em,-4px);
+  line-height:.96;max-width:880px;margin-bottom:36px}
+.ht .ch{display:inline-block;
+  opacity:0;transform:translateY(1.15em) rotateX(-40deg);transform-origin:bottom center;
+  animation:charIn .6s var(--e4) forwards;white-space:pre}
+@keyframes charIn{to{opacity:1;transform:none}}
+
+.hero-sub{font-size:clamp(17px,2vw,21px);font-weight:300;
+  color:var(--t2);max-width:560px;line-height:1.65;margin-bottom:12px;
+  opacity:0;animation:fadeUp .9s 1.9s var(--e4) forwards}
+.hero-sub2{font-size:clamp(14px,1.4vw,16px);font-weight:400;
+  color:var(--t4);max-width:480px;line-height:1.75;
+  opacity:0;animation:fadeUp .9s 2.15s var(--e4) forwards}
+
+/* KEY NUMBERS */
+.hero-kpis{
+  display:flex;gap:56px;margin-top:56px;flex-wrap:wrap;justify-content:center;
+  opacity:0;animation:fadeUp .8s 2.4s var(--e4) forwards}
+.kpi{text-align:center}
+.kpi-n{font-size:clamp(34px,5vw,56px);font-weight:700;letter-spacing:-2px;
+  background:linear-gradient(180deg,#fff 30%,rgba(255,255,255,.4) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.1}
+.kpi-l{font-size:10px;color:var(--t4);margin-top:8px;letter-spacing:1.8px;
+  text-transform:uppercase;font-weight:500}
+
+.hero-btns{margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  opacity:0;animation:fadeUp .7s 2.7s var(--e4) forwards}
+
+/* STACK PILLS */
+.hero-stack{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:28px;
+  opacity:0;animation:fadeUp .7s 2.9s var(--e4) forwards}
+.sp{padding:5px 12px;border-radius:980px;font-size:11px;font-weight:500;
+  letter-spacing:.2px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);color:var(--t3);
+  transition:background .2s,color .2s}
+.sp:hover{background:rgba(255,255,255,.08);color:var(--t2)}
+
+.sc-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  opacity:0;animation:fadeUp .6s 3.2s var(--e4) forwards}
+.sc-m{width:20px;height:32px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:flex-start;justify-content:center;padding-top:6px}
+.sc-d{width:2px;height:6px;border-radius:1px;background:rgba(255,255,255,.35);
+  animation:scDrop 2s 3.5s ease-in-out infinite}
+@keyframes scDrop{0%{opacity:1;transform:none}80%{opacity:0;transform:translateY(10px)}100%{opacity:0}}
+.sc-txt{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--t4)}
+
+/* ══ STRIP — product navigator ══ */
+.strip{display:grid;grid-template-columns:repeat(5,1fr);
+  border-top:.5px solid rgba(255,255,255,.06);border-bottom:.5px solid rgba(255,255,255,.06);
+  position:sticky;top:var(--nav);z-index:8000;
+  background:rgba(22,22,22,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.si{display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 10px;text-decoration:none;border-right:.5px solid rgba(255,255,255,.06);
+  transition:background .25s;cursor:none}
+.si:last-child{border-right:none}
+.si:hover{background:rgba(255,255,255,.04)}
+.si-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:14px;transition:transform .4s var(--e3)}
+.si:hover .si-ico{transform:scale(1.18) translateY(-2px)}
+.si-lbl{font-size:10px;font-weight:500;color:var(--t4);transition:color .25s;letter-spacing:.2px}
+.si.on .si-lbl,.si:hover .si-lbl{color:var(--t1)}
+.si-dot{width:3px;height:3px;border-radius:50%;opacity:0;transform:scale(0);
+  transition:opacity .3s,transform .35s var(--e3)}
+.si.on .si-dot{opacity:1;transform:scale(1)}
+
+/* ══ BUTTONS — Apple pill style ══ */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:12px 24px;
+  border-radius:980px;font-size:14px;font-weight:500;text-decoration:none;
+  border:none;cursor:none;transition:transform .35s var(--e3),box-shadow .35s;
+  position:relative;overflow:hidden;letter-spacing:-.1px}
+.btn::before{content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(255,255,255,.12) 0%,transparent 60%);
+  opacity:0;transition:opacity .3s}
+.btn:hover::before{opacity:1}
+.btn:hover{transform:scale(1.03) translateY(-1px)}
+.bw{background:#f5f5f7;color:#1d1d1f}
+.bw:hover{box-shadow:0 6px 32px rgba(255,255,255,.18)}
+.bg{background:rgba(255,255,255,.06);color:var(--t2);
+  border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px)}
+.bg:hover{background:rgba(255,255,255,.1);color:var(--t1)}
+
+/* ══ DIVIDER ══ */
+.div{height:.5px;background:rgba(255,255,255,.06);position:relative;z-index:10}
+
+/* ═══════════════════════════════════════════════
+   PROJECT SECTIONS — APPLE CASE STUDY PATTERN
+═══════════════════════════════════════════════ */
+.proj{overflow:hidden}
+
+/* ── CINEMATIC REVEAL ── */
+.proj-reveal{
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:128px 24px 96px;position:relative;overflow:hidden}
+.proj-bg{position:absolute;inset:0;pointer-events:none}
+
+.p-ico{
+  width:88px;height:88px;border-radius:22px;display:flex;align-items:center;
+  justify-content:center;font-size:40px;margin-bottom:32px;flex-shrink:0;
+  position:relative;transition:transform .5s var(--e3);will-change:transform}
+.p-ico::after{content:'';position:absolute;inset:-1px;border-radius:inherit;
+  background:linear-gradient(145deg,rgba(255,255,255,.28) 0%,transparent 50%,rgba(0,0,0,.08) 100%);
+  pointer-events:none}
+.p-ico::before{content:'';position:absolute;inset:0;border-radius:inherit;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2);pointer-events:none}
+
+.p-eyebrow{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+  margin-bottom:20px}
+.p-title{font-size:clamp(52px,8.5vw,108px);font-weight:700;letter-spacing:clamp(-2px,-0.035em,-4px);
+  line-height:.94;margin-bottom:16px;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.p-tagline{font-size:clamp(19px,2.5vw,27px);font-weight:300;letter-spacing:-.2px;
+  color:var(--t2);margin-bottom:28px}
+.p-desc{font-size:clamp(15px,1.6vw,18px);line-height:1.72;color:var(--t3);
+  max-width:600px;margin-bottom:40px}
+
+/* ── BUILD META — glass badge ── */
+.build-meta{
+  display:inline-flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center;
+  padding:14px 24px;border-radius:14px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  margin-bottom:44px}
+.bm-item{display:flex;flex-direction:column;align-items:center;gap:3px}
+.bm-v{font-size:18px;font-weight:700;letter-spacing:-.3px;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.bm-l{font-size:9px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--t4)}
+.bm-sep{width:.5px;height:28px;background:rgba(255,255,255,.08)}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:680px}
+.chip{padding:5px 12px;border-radius:980px;font-size:11px;font-weight:600;
+  letter-spacing:.2px;backdrop-filter:blur(16px);
+  transition:transform .35s var(--e3),box-shadow .35s;cursor:none}
+.chip:hover{transform:translateY(-2px)}
+
+/* ── PROBLEM → SOLUTION — bento grid ── */
+.narrative{
+  display:grid;grid-template-columns:1fr 1fr;gap:.5px;
+  background:rgba(255,255,255,.06);max-width:var(--max);width:100%;
+  border-radius:20px;overflow:hidden;margin:0 auto}
+.nar-cell{padding:40px 36px;background:rgba(8,8,8,.98)}
+.nar-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--t4);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.nar-label::before{content:'';width:16px;height:.5px;background:currentColor}
+.nar-cell h3{font-size:clamp(19px,2.4vw,24px);font-weight:600;letter-spacing:-.4px;
+  line-height:1.32;margin-bottom:14px;color:var(--t1)}
+.nar-cell p{font-size:14px;line-height:1.72;color:var(--t3)}
+
+/* ── FEATURE DEEP-DIVE ── */
+.features-title{
+  text-align:center;padding:96px 24px 48px;position:relative;z-index:10}
+.features-title h3{font-size:clamp(30px,4.5vw,52px);font-weight:700;
+  letter-spacing:-1.5px;line-height:1.06;margin-bottom:14px}
+.features-title p{font-size:clamp(15px,1.7vw,18px);color:var(--t3);
+  max-width:520px;margin:0 auto;line-height:1.65}
+
+.feat-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:.5px;background:rgba(255,255,255,.06);
+  max-width:var(--max);width:100%;margin:0 auto;
+  border-radius:22px;overflow:hidden}
+.feat{
+  padding:36px 32px;background:rgba(8,8,8,.98);
+  transition:background .35s;position:relative;overflow:hidden;cursor:none}
+.feat:hover{background:rgba(18,18,18,.98)}
+.feat-num{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--t4);margin-bottom:20px}
+.feat-ico{font-size:30px;margin-bottom:16px;display:block;
+  transition:transform .45s var(--e3)}
+.feat:hover .feat-ico{transform:scale(1.12) rotate(-4deg)}
+.feat h4{font-size:clamp(17px,2vw,20px);font-weight:600;
+  letter-spacing:-.3px;margin-bottom:10px;color:var(--t1)}
+.feat p{font-size:13.5px;line-height:1.72;color:var(--t3)}
+.feat-tag{
+  display:inline-block;margin-top:16px;
+  padding:4px 10px;border-radius:980px;
+  font-size:10px;font-weight:600;letter-spacing:.3px;
+  background:rgba(255,255,255,.05);color:var(--t4)}
+
+/* glow follow feat */
+.feat-glow{position:absolute;width:280px;height:280px;border-radius:50%;
+  transform:translate(-50%,-50%);filter:blur(60px);opacity:0;
+  pointer-events:none;transition:opacity .4s}
+.feat:hover .feat-glow{opacity:.14}
+
+/* ── STACK SECTION ── */
+.stack-section{
+  padding:96px 24px;text-align:center;position:relative;z-index:10;
+  max-width:var(--max);margin:0 auto}
+.stack-section h3{font-size:clamp(26px,3.5vw,40px);font-weight:700;
+  letter-spacing:-1px;margin-bottom:10px}
+.stack-section .sub{font-size:15px;color:var(--t3);margin-bottom:40px;line-height:1.65}
+.tech-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tech{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 16px;border-radius:10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  font-size:13px;font-weight:500;color:var(--t2);
+  transition:transform .35s var(--e3),background .25s,border-color .25s;
+  cursor:none}
+.tech:hover{transform:translateY(-3px);background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.14);color:var(--t1)}
+.tech-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── RESULTS — clean grid ── */
+.results{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:.5px;background:rgba(255,255,255,.06);
+  max-width:700px;margin:0 auto 64px;
+  border-radius:18px;overflow:hidden}
+.res{padding:32px 20px;background:rgba(8,8,8,.98);text-align:center}
+.res-n{font-size:clamp(24px,3.5vw,42px);font-weight:700;letter-spacing:-1.5px;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.res-l{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--t4);margin-top:6px}
+
+/* ══ SCROLL REVEAL — blur + lift ══ */
+.rv{opacity:0;transform:translateY(28px);filter:blur(6px);
+  transition:opacity 1s var(--e4),transform 1s var(--e4),filter 1s var(--e4)}
+.rv.on{opacity:1;transform:none;filter:blur(0)}
+.rv.sc{opacity:0;transform:scale(.92);filter:blur(8px)}
+.rv.sc.on{opacity:1;transform:none;filter:blur(0)}
+.d1{transition-delay:.06s}.d2{transition-delay:.12s}.d3{transition-delay:.18s}
+.d4{transition-delay:.24s}.d5{transition-delay:.30s}.d6{transition-delay:.36s}
+.d7{transition-delay:.42s}.d8{transition-delay:.48s}
+
+/* ══ COLOR THEMES — Apple system palette ══ */
+/* MEAL — warm amber */
+.meal-col{color:#ff9f0a}
+.meal-grad{background:linear-gradient(138deg,#c26800 0%,#ff9500 28%,#ffcc02 62%,#fff4cc 100%)}
+.meal-chip{background:rgba(255,149,0,.08);color:#ff9f0a;
+  border:.5px solid rgba(255,149,0,.18);backdrop-filter:blur(8px)}
+.meal-chip:hover{box-shadow:0 4px 16px rgba(255,149,0,.2);background:rgba(255,149,0,.12)}
+.meal-card-bg{background:rgba(8,8,8,.98);border:.5px solid rgba(255,149,0,.08)}
+.meal-dot{background:#ff9500}
+.meal-bm{background:linear-gradient(135deg,#ff9500,#ffcc02)}
+.meal-res{background:linear-gradient(135deg,#ff9500,#ffcc02)}
+.meal-tech{border-color:rgba(255,149,0,.15)!important}
+.meal-tech:hover{border-color:rgba(255,149,0,.35)!important;background:rgba(255,149,0,.06)!important}
+.meal-si-dot{background:#ff9500}
+/* PROMETHEE — vivid purple */
+.prom-col{color:#bf5af2}
+.prom-grad{background:linear-gradient(138deg,#5c20a0 0%,#bf5af2 42%,#ddb4ff 100%)}
+.prom-chip{background:rgba(191,90,242,.08);color:#cc70ff;
+  border:.5px solid rgba(191,90,242,.18);backdrop-filter:blur(8px)}
+.prom-chip:hover{box-shadow:0 4px 16px rgba(191,90,242,.2);background:rgba(191,90,242,.12)}
+.prom-card-bg{background:rgba(8,8,8,.98);border:.5px solid rgba(191,90,242,.08)}
+.prom-dot{background:#bf5af2}
+.prom-bm{background:linear-gradient(135deg,#bf5af2,#ddb4ff)}
+.prom-res{background:linear-gradient(135deg,#bf5af2,#ddb4ff)}
+.prom-si-dot{background:#bf5af2}
+/* IRIS — system blue */
+.iris-col{color:#0a84ff}
+.iris-grad{background:linear-gradient(138deg,#004fd4 0%,#0a84ff 38%,#64d2ff 100%)}
+.iris-chip{background:rgba(10,132,255,.08);color:#409cff;
+  border:.5px solid rgba(10,132,255,.18);backdrop-filter:blur(8px)}
+.iris-chip:hover{box-shadow:0 4px 16px rgba(10,132,255,.2);background:rgba(10,132,255,.12)}
+.iris-card-bg{background:rgba(8,8,8,.98);border:.5px solid rgba(10,132,255,.08)}
+.iris-dot{background:#0a84ff}
+.iris-bm{background:linear-gradient(135deg,#0a84ff,#64d2ff)}
+.iris-res{background:linear-gradient(135deg,#0a84ff,#64d2ff)}
+.iris-si-dot{background:#0a84ff}
+/* PIGEON — system green */
+.pig-col{color:#30d158}
+.pig-grad{background:linear-gradient(138deg,#0a6b22 0%,#30d158 38%,#a8f0be 100%)}
+.pig-chip{background:rgba(48,209,88,.08);color:#3de065;
+  border:.5px solid rgba(48,209,88,.18);backdrop-filter:blur(8px)}
+.pig-chip:hover{box-shadow:0 4px 16px rgba(48,209,88,.2);background:rgba(48,209,88,.12)}
+.pig-card-bg{background:rgba(8,8,8,.98);border:.5px solid rgba(48,209,88,.08)}
+.pig-dot{background:#30d158}
+.pig-bm{background:linear-gradient(135deg,#30d158,#a8f0be)}
+.pig-res{background:linear-gradient(135deg,#30d158,#a8f0be)}
+.pig-si-dot{background:#30d158}
+/* FAMILY — system pink */
+.fam-col{color:#ff375f}
+.fam-grad{background:linear-gradient(138deg,#a8002a 0%,#ff375f 38%,#ffa0b8 100%)}
+.fam-chip{background:rgba(255,55,95,.08);color:#ff4d6d;
+  border:.5px solid rgba(255,55,95,.18);backdrop-filter:blur(8px)}
+.fam-chip:hover{box-shadow:0 4px 16px rgba(255,55,95,.2);background:rgba(255,55,95,.12)}
+.fam-card-bg{background:rgba(8,8,8,.98);border:.5px solid rgba(255,55,95,.08)}
+.fam-dot{background:#ff375f}
+.fam-bm{background:linear-gradient(135deg,#ff375f,#ffa0b8)}
+.fam-res{background:linear-gradient(135deg,#ff375f,#ffa0b8)}
+.fam-si-dot{background:#ff375f}
+
+/* ══ STATUS PILL — shipped vs WIP ══ */
+.status{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 14px;border-radius:980px;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:28px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.status-shipped{background:rgba(48,209,88,.08);color:#30d158;
+  border:.5px solid rgba(48,209,88,.18)}
+.status-shipped::before{content:'';width:5px;height:5px;border-radius:50%;
+  background:#30d158;box-shadow:0 0 8px rgba(48,209,88,.5)}
+.status-wip{background:rgba(255,214,10,.06);color:#ffd60a;
+  border:.5px solid rgba(255,214,10,.16)}
+.status-wip::before{content:'';width:5px;height:5px;border-radius:50%;
+  background:#ffd60a;box-shadow:0 0 8px rgba(255,214,10,.4);
+  animation:dot-pulse 2.4s ease-in-out infinite}
+
+/* ══ FOOTER — minimal Apple ══ */
+footer{background:rgba(0,0,0,.98);border-top:.5px solid rgba(255,255,255,.06);
+  padding:56px 24px 40px;text-align:center;position:relative;z-index:10}
+.ft-links{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.ft-links a{color:var(--t4);text-decoration:none;font-size:12px;font-weight:400;
+  letter-spacing:.1px;transition:color .25s;cursor:none;position:relative}
+.ft-links a::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:.5px;
+  background:currentColor;transform:scaleX(0);transition:transform .3s var(--e2)}
+.ft-links a:hover{color:var(--t2)}
+.ft-links a:hover::after{transform:scaleX(1)}
+footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:860px){
+  .narrative{grid-template-columns:1fr}
+  .feat-grid{grid-template-columns:1fr}
+  .results{grid-template-columns:1fr 1fr}
+  .hero-kpis{gap:36px}
+  .p-title{margin-bottom:12px}
+  .build-meta{gap:16px;padding:12px 20px}
+}
+@media(max-width:600px){
+  .hero{padding:80px 20px 96px}
+  .ht{font-size:clamp(38px,11vw,52px);letter-spacing:-1.5px;margin-bottom:28px}
+  .hero-sub{font-size:16px}
+  .hero-sub2{font-size:13px}
+  .hero-kpis{gap:24px}
+  .kpi-n{font-size:clamp(28px,8vw,40px)}
+  .hero-btns{flex-direction:column;width:100%;max-width:320px}
+  .btn{justify-content:center;width:100%}
+  .strip{grid-template-columns:repeat(3,1fr)}
+  .strip .si:nth-child(n+4){border-top:.5px solid rgba(255,255,255,.06)}
+  .results{grid-template-columns:1fr}
+  .nr{display:none}
+  .build-meta{gap:10px;padding:10px 16px}
+  .bm-v{font-size:16px}
+  .bm-sep{height:22px}
+  .nar-cell{padding:28px 24px}
+  .feat{padding:28px 24px}
+  .proj-reveal{padding:96px 20px 72px}
+  .p-title{font-size:clamp(40px,11vw,56px)}
+  .p-tagline{font-size:17px}
+  .p-ico{width:72px;height:72px;border-radius:18px;font-size:32px;margin-bottom:24px}
+  .chips{gap:5px}
+  .chip{font-size:10px;padding:4px 10px}
+  .features-title{padding:64px 20px 36px}
+  .features-title h3{font-size:clamp(26px,7vw,36px)}
+  .stack-section{padding:64px 20px}
+  .ft-links{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<div id="gbg"></div><div id="noise"></div><canvas id="cv"></canvas>
+<div id="cur"></div><div id="cur2"></div>
+
+<!-- PRELOADER -->
+<div id="ld">
+  <div class="ld-name">Aubin</div>
+  <div class="ld-role">Product Builder</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nl">Aubin</div>
+  <ul class="nr">
+    <li><a href="#meal" data-s="meal">Meal</a></li>
+    <li><a href="#prom" data-s="prom">Prométhée</a></li>
+    <li><a href="#iris" data-s="iris">Iris</a></li>
+    <li><a href="#pig" data-s="pig">Pigeon</a></li>
+    <li><a href="#fam" data-s="fam">Family</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="top">
+  <div class="hero-pill"><span class="hero-pill-dot"></span>Disponible · 2026</div>
+  <h1 class="ht" id="hh"></h1>
+  <p class="hero-sub">J'orchestre des agents IA pour livrer des apps iOS de haute qualité en SwiftUI — de l'idée à l'App Store, seul.</p>
+  <p class="hero-sub2">Cas d'école : une app complète, full stack, prête pour le Store.<br>180 heures. 200 euros. Tout compris.</p>
+
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-n" id="kpi1">0h</div><div class="kpi-l">App complète (Meal)</div></div>
+    <div class="kpi"><div class="kpi-n" id="kpi2">0€</div><div class="kpi-l">Coût total (Meal)</div></div>
+    <div class="kpi"><div class="kpi-n" id="kpi3">0</div><div class="kpi-l">Projets en cours</div></div>
+    <div class="kpi"><div class="kpi-n">A→Z</div><div class="kpi-l">Solo sur chaque projet</div></div>
+  </div>
+
+  <div class="hero-btns">
+    <a href="#meal" class="btn bw">Voir mes projets</a>
+    <a href="mailto:contact@aubin.dev" class="btn bg">Me contacter →</a>
+  </div>
+
+  <div class="hero-stack">
+    <span class="sp">SwiftUI</span><span class="sp">Orchestration IA</span>
+    <span class="sp">Full Stack</span><span class="sp">iOS</span>
+    <span class="sp">App Store</span><span class="sp">Product Design</span>
+    <span class="sp">UX</span>
+  </div>
+
+  <div class="sc-hint">
+    <div class="sc-m"><div class="sc-d"></div></div>
+    <div class="sc-txt">Découvrir</div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip" id="strip">
+  <a href="#meal" class="si" data-s="meal">
+    <div class="si-ico" style="background:rgba(255,149,0,.13)">🍽️</div>
+    <div class="si-lbl">Meal</div><div class="si-dot meal-si-dot"></div>
+  </a>
+  <a href="#prom" class="si" data-s="prom">
+    <div class="si-ico" style="background:rgba(191,90,242,.13)">🔬</div>
+    <div class="si-lbl">Prométhée</div><div class="si-dot prom-si-dot"></div>
+  </a>
+  <a href="#iris" class="si" data-s="iris">
+    <div class="si-ico" style="background:rgba(10,132,255,.13)">🛸</div>
+    <div class="si-lbl">Iris</div><div class="si-dot iris-si-dot"></div>
+  </a>
+  <a href="#pig" class="si" data-s="pig">
+    <div class="si-ico" style="background:rgba(48,209,88,.13)">🕊️</div>
+    <div class="si-lbl">Pigeon</div><div class="si-dot pig-si-dot"></div>
+  </a>
+  <a href="#fam" class="si" data-s="fam">
+    <div class="si-ico" style="background:rgba(255,55,95,.13)">🏠</div>
+    <div class="si-lbl">Family</div><div class="si-dot fam-si-dot"></div>
+  </a>
+</div>
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+     MEAL
+══════════════════════════════════════ -->
+<section class="proj" id="meal">
+
+  <!-- CINEMATIC REVEAL -->
+  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 80% 110%,#1c0a00,#000 55%)">
+    <div class="p-ico rv sc d1"
+      style="background:linear-gradient(145deg,#d07200,#ffbf00);box-shadow:0 30px 80px rgba(255,149,0,.52);animation:iconFloat 4s 3s ease-in-out infinite">🍽️</div>
+    <div class="status status-shipped rv d2">App Store Ready</div>
+    <p class="p-eyebrow meal-col rv d2">Meal</p>
+    <h2 class="p-title meal-grad rv d3">La charge<br>mentale,<br>zéro.</h2>
+    <p class="p-tagline rv d4">L'OS du repas. Du frigo à la table.</p>
+    <p class="p-desc rv d5">Un problème réel — la charge mentale liée aux repas, leur organisation, leur préparation et les courses. Une réponse totale : un système all-in-one conçu pour éliminer cette friction, pour toujours.</p>
+
+    <div class="build-meta rv d5">
+      <div class="bm-item">
+        <div class="bm-v meal-bm">180h</div>
+        <div class="bm-l">Développement</div>
+      </div>
+      <div class="bm-sep"></div>
+      <div class="bm-item">
+        <div class="bm-v meal-bm">200€</div>
+        <div class="bm-l">Coût total</div>
+      </div>
+      <div class="bm-sep"></div>
+      <div class="bm-item">
+        <div class="bm-v meal-bm">Solo</div>
+        <div class="bm-l">A → Z</div>
+      </div>
+      <div class="bm-sep"></div>
+      <div class="bm-item">
+        <div class="bm-v meal-bm">✓ Store</div>
+        <div class="bm-l">App Store Ready</div>
+      </div>
+    </div>
+
+    <div class="chips rv d6">
+      <span class="chip meal-chip">SwiftUI</span>
+      <span class="chip meal-chip">Planning intelligent</span>
+      <span class="chip meal-chip">Mode auto 1s</span>
+      <span class="chip meal-chip">Courses auto</span>
+      <span class="chip meal-chip">Mode cuisine</span>
+      <span class="chip meal-chip">Préférences santé</span>
+    </div>
+  </div>
+
+  <!-- PROBLEM / SOLUTION -->
+  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
+    <div class="narrative rv">
+      <div class="nar-cell">
+        <div class="nar-label">Le problème</div>
+        <h3>La charge mentale du repas est épuisante.</h3>
+        <p>Quoi cuisiner ? Ce qu'il faut acheter. Qu'est-ce qui reste dans le frigo. Comment équilibrer la semaine. Des décisions répétées, quotidiennes, chronophages — qui finissent toujours en repas improvisés et courses bâclées.</p>
+      </div>
+      <div class="nar-cell">
+        <div class="nar-label">Ma réponse</div>
+        <h3>Un OS complet. Du catalogue à la cuisine.</h3>
+        <p>Meal centralise tout : catalogue de recettes avec préférences alimentaires et santé, planning automatique en une seconde, liste de courses intelligente générée instantanément, suivi du menu en temps réel et mode cuisine intégré.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features-title rv" style="position:relative;z-index:10">
+    <h3>Quatre onglets.<br>Zéro friction.</h3>
+    <p>Chaque fonctionnalité répond à une étape précise du problème.</p>
+  </div>
+
+  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
+    <div class="feat-grid rv">
+
+      <div class="feat">
+        <div class="feat-glow" style="background:#ff9500"></div>
+        <div class="feat-num">01 — Planning</div>
+        <span class="feat-ico">📅</span>
+        <h4>Planification Manuel & Auto</h4>
+        <p>Parcourez un catalogue strict de recettes avec vos préférences alimentaires et de santé définies. Ou laissez le mode automatique générer toute votre semaine en une seconde — équilibré, varié, adapté.</p>
+        <span class="feat-tag">Mode auto · 1 seconde</span>
+      </div>
+
+      <div class="feat">
+        <div class="feat-glow" style="background:#ff9500"></div>
+        <div class="feat-num">02 — Courses</div>
+        <span class="feat-ico">🛒</span>
+        <h4>Liste Intelligente Instantanée</h4>
+        <p>La liste de courses se génère automatiquement depuis votre planning. Quantités exactes, organisée par catégorie. Avec la possibilité d'ajouter manuellement des articles pour rester 100% libre en magasin.</p>
+        <span class="feat-tag">Génération auto · Ajout manuel</span>
+      </div>
+
+      <div class="feat">
+        <div class="feat-glow" style="background:#ff9500"></div>
+        <div class="feat-num">03 — Mon Menu</div>
+        <span class="feat-ico">👁️</span>
+        <h4>Vue en Temps Réel du Menu</h4>
+        <p>Un onglet dédié pour visualiser ce qui reste à cuisiner, les recettes déjà préparées, et anticiper la semaine. Plus jamais de question "on mange quoi ce soir ?" sans réponse immédiate.</p>
+        <span class="feat-tag">Recettes restantes · À cuisiner</span>
+      </div>
+
+      <div class="feat">
+        <div class="feat-glow" style="background:#ff9500"></div>
+        <div class="feat-num">04 — Cuisine</div>
+        <span class="feat-ico">👨‍🍳</span>
+        <h4>Mode Cuisine Intégré</h4>
+        <p>Lancez le mode cuisine directement depuis l'app. Instructions étape par étape, minuteries intégrées, quantités adaptées au nombre de personnes. Du planning à l'assiette sans friction.</p>
+        <span class="feat-tag">Step-by-step · Minuteries</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STACK -->
+  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
+    <h3>Comment c'est construit.</h3>
+    <p class="sub">Stack technique choisie pour la qualité de l'expérience iOS et la vitesse de livraison.</p>
+    <div class="tech-grid">
+      <div class="tech meal-tech"><div class="tech-dot" style="background:#ff9500"></div>SwiftUI</div>
+      <div class="tech meal-tech"><div class="tech-dot" style="background:#ff9500"></div>Swift</div>
+      <div class="tech meal-tech"><div class="tech-dot" style="background:#ff9500"></div>SwiftData</div>
+      <div class="tech meal-tech"><div class="tech-dot" style="background:#ff9500"></div>CloudKit</div>
+      <div class="tech meal-tech"><div class="tech-dot" style="background:#ff9500"></div>Orchestration IA</div>
+      <div class="tech meal-tech"><div class="tech-dot" style="background:#ff9500"></div>iOS 17+</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div style="padding:60px 24px 100px;position:relative;z-index:10">
+    <div class="results rv">
+      <div class="res">
+        <div class="res-n meal-res" data-t="180" data-s="h">0h</div>
+        <div class="res-l">De dev solo</div>
+      </div>
+      <div class="res">
+        <div class="res-n meal-res" data-t="200" data-s="€">0€</div>
+        <div class="res-l">Coût total</div>
+      </div>
+      <div class="res">
+        <div class="res-n meal-res">✓</div>
+        <div class="res-l">App Store ready</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+     PROMÉTHÉE
+══════════════════════════════════════ -->
+<section class="proj" id="prom">
+  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 15% 0%,#0e0020,#000 55%)">
+    <div class="p-ico rv sc d1"
+      style="background:linear-gradient(145deg,#4e18a0,#bf5af2);box-shadow:0 30px 80px rgba(191,90,242,.52);animation:iconFloat 4.5s 3.2s ease-in-out infinite">🔬</div>
+    <div class="status status-wip rv d2">En développement</div>
+    <p class="p-eyebrow prom-col rv d2">Prométhée</p>
+    <h2 class="p-title prom-grad rv d3">La vérité,<br>vérifiable.</h2>
+    <p class="p-tagline rv d4">Détection d'IA. Certification. Confiance.</p>
+    <p class="p-desc rv d5">Dans un monde noyé par les deepfakes et les contenus générés par IA, Prométhée répond avec la première app d'analyse, de certification et d'évaluation du risque — pour photos comme pour documents.</p>
+    <div class="build-meta rv d5">
+      <div class="bm-item"><div class="bm-v prom-bm">Solo</div><div class="bm-l">A → Z</div></div>
+      <div class="bm-sep"></div>
+      <div class="bm-item"><div class="bm-v prom-bm">iOS</div><div class="bm-l">SwiftUI</div></div>
+      <div class="bm-sep"></div>
+      <div class="bm-item"><div class="bm-v prom-bm">En cours</div><div class="bm-l">Développement</div></div>
+    </div>
+    <div class="chips rv d6">
+      <span class="chip prom-chip">Détection deepfake</span><span class="chip prom-chip">Certification blockchain</span>
+      <span class="chip prom-chip">Score de risque</span><span class="chip prom-chip">Analyse PDF/DOCX</span>
+      <span class="chip prom-chip">Rapport légal</span><span class="chip prom-chip">API entreprise</span>
+    </div>
+  </div>
+  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
+    <div class="narrative rv">
+      <div class="nar-cell">
+        <div class="nar-label">Le problème</div>
+        <h3>On ne sait plus distinguer le vrai du faux.</h3>
+        <p>Deepfakes, textes GPT, photos générées — la désinformation s'est industrialisée. Aucun outil grand public ne permettait de certifier l'authenticité d'un contenu de façon légale et accessible.</p>
+      </div>
+      <div class="nar-cell">
+        <div class="nar-label">Ma réponse</div>
+        <h3>Analyse, certification, score de risque — en 3 secondes.</h3>
+        <p>12 modèles IA analysent en parallèle. Le résultat est certifié cryptographiquement. Un score de risque contextualise la menace. Un rapport PDF légal est exportable instantanément.</p>
+      </div>
+    </div>
+  </div>
+  <div class="features-title rv" style="position:relative;z-index:10">
+    <h3>Voir, certifier,<br>protéger.</h3>
+    <p>Chaque couche de l'app répond à une dimension du problème.</p>
+  </div>
+  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
+    <div class="feat-grid rv">
+      <div class="feat"><div class="feat-glow" style="background:#bf5af2"></div>
+        <div class="feat-num">01 — Analyse</div><span class="feat-ico">🔍</span>
+        <h4>Détection Multi-Modèle</h4>
+        <p>12 détecteurs IA s'exécutent en parallèle sur chaque contenu soumis. Photos, PDF, DOCX — chaque format est couvert.</p>
+        <span class="feat-tag">>97% précision · 3s</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#bf5af2"></div>
+        <div class="feat-num">02 — Certification</div><span class="feat-ico">🏛️</span>
+        <h4>Empreinte Cryptographique</h4>
+        <p>Chaque analyse génère un certificat d'authenticité avec horodatage immuable — juridiquement opposable et vérifiable.</p>
+        <span class="feat-tag">Blockchain · Légal</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#bf5af2"></div>
+        <div class="feat-num">03 — Risque</div><span class="feat-ico">⚠️</span>
+        <h4>Score de Risque Contextuel</h4>
+        <p>Désinformation, fraude documentaire, manipulation visuelle — un score chiffré avec recommandations d'action concrètes.</p>
+        <span class="feat-tag">Contextualisé · Actionnable</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#bf5af2"></div>
+        <div class="feat-num">04 — Rapport</div><span class="feat-ico">📄</span>
+        <h4>Rapport PDF Complet</h4>
+        <p>Export PDF avec zones annotées, métadonnées extraites et historique d'analyse. Prêt pour utilisation légale ou journalistique.</p>
+        <span class="feat-tag">Export PDF · Zones annotées</span>
+      </div>
+    </div>
+  </div>
+  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
+    <h3>Comment c'est construit.</h3>
+    <p class="sub">Pipeline d'analyse IA orchestré, frontend natif iOS.</p>
+    <div class="tech-grid">
+      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>SwiftUI</div>
+      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>Vision Framework</div>
+      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>Core ML</div>
+      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>Python API</div>
+      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>Orchestration IA</div>
+      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>PDFKit</div>
+    </div>
+  </div>
+  <div style="padding:60px 24px 100px;position:relative;z-index:10">
+    <div class="results rv">
+      <div class="res"><div class="res-n prom-res">Solo</div><div class="res-l">Développement</div></div>
+      <div class="res"><div class="res-n prom-res">SwiftUI</div><div class="res-l">Frontend natif</div></div>
+      <div class="res"><div class="res-n prom-res">En cours</div><div class="res-l">Statut projet</div></div>
+    </div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+     IRIS
+══════════════════════════════════════ -->
+<section class="proj" id="iris">
+  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 85% 110%,#001528,#000 55%)">
+    <div class="p-ico rv sc d1"
+      style="background:linear-gradient(145deg,#0040c4,#0a84ff);box-shadow:0 30px 80px rgba(10,132,255,.52);animation:iconFloat 3.8s 3.5s ease-in-out infinite">🛸</div>
+    <div class="status status-wip rv d2">En développement</div>
+    <p class="p-eyebrow iris-col rv d2">Iris</p>
+    <h2 class="p-title iris-grad rv d3">Tout voir.<br>Tout contrôler.</h2>
+    <p class="p-tagline rv d4">Commandement de missions drones ultra-complet.</p>
+    <p class="p-desc rv d5">Iris est le système de commandement de missions de surveillance drone le plus abouti. Planification tactique, coordination d'essaim, analyse IA temps réel — pour les opérations qui n'ont pas droit à l'erreur.</p>
+    <div class="build-meta rv d5">
+      <div class="bm-item"><div class="bm-v iris-bm">Solo</div><div class="bm-l">A → Z</div></div>
+      <div class="bm-sep"></div>
+      <div class="bm-item"><div class="bm-v iris-bm">iOS</div><div class="bm-l">SwiftUI</div></div>
+      <div class="bm-sep"></div>
+      <div class="bm-item"><div class="bm-v iris-bm">En cours</div><div class="bm-l">Développement</div></div>
+    </div>
+    <div class="chips rv d6">
+      <span class="chip iris-chip">64 drones</span><span class="chip iris-chip">Carte 3D temps réel</span>
+      <span class="chip iris-chip">Détection IA</span><span class="chip iris-chip">Chiffrement E2E</span>
+      <span class="chip iris-chip">Mode offline</span><span class="chip iris-chip">Rapport automatique</span>
+    </div>
+  </div>
+  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
+    <div class="narrative rv">
+      <div class="nar-cell">
+        <div class="nar-label">Le problème</div>
+        <h3>Les opérations de surveillance drone manquent d'un vrai OS tactique.</h3>
+        <p>Coordonner plusieurs drones, analyser les flux en direct, maintenir la sécurité des communications et générer des rapports — aucun outil existant ne centralise tout ça dans une interface cohérente et mobile.</p>
+      </div>
+      <div class="nar-cell">
+        <div class="nar-label">Ma réponse</div>
+        <h3>Un système de commandement complet. Sur iPhone.</h3>
+        <p>Carte tactique 3D en temps réel, contrôle d'essaim jusqu'à 64 drones avec anti-collision IA, détection d'objets live, communications E2E chiffrées et rapport de mission auto-généré.</p>
+      </div>
+    </div>
+  </div>
+  <div class="features-title rv" style="position:relative;z-index:10">
+    <h3>Commandement.<br>Précision. Contrôle.</h3>
+    <p>Chaque module répond à une exigence opérationnelle critique.</p>
+  </div>
+  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
+    <div class="feat-grid rv">
+      <div class="feat"><div class="feat-glow" style="background:#0a84ff"></div>
+        <div class="feat-num">01 — Carte</div><span class="feat-ico">🗺️</span>
+        <h4>Carte Tactique 3D Live</h4>
+        <p>Vue opérationnelle en temps réel. Trajectoires, zones interdites, altitudes et alertes géolocalisées sur une carte 3D.</p>
+        <span class="feat-tag">Temps réel · 3D</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#0a84ff"></div>
+        <div class="feat-num">02 — Essaim</div><span class="feat-ico">🤖</span>
+        <h4>Contrôle d'Essaim Autonome</h4>
+        <p>Jusqu'à 64 drones coordonnés simultanément. Anti-collision IA intégré. Formation automatique et gestion des pannes en temps réel.</p>
+        <span class="feat-tag">64 drones · Anti-collision IA</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#0a84ff"></div>
+        <div class="feat-num">03 — Analyse</div><span class="feat-ico">👁️</span>
+        <h4>Détection Temps Réel</h4>
+        <p>Reconnaissance d'objets, tracking de cibles mobiles et alertes intelligentes. Flux vidéo analysé frame par frame par IA.</p>
+        <span class="feat-tag">Object detection · Tracking</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#0a84ff"></div>
+        <div class="feat-num">04 — Sécurité</div><span class="feat-ico">🔒</span>
+        <h4>OPSEC Totale</h4>
+        <p>Communications E2E chiffrées. Clés éphémères par mission. Fonctionnement offline complet. Zéro trace résiduelle post-mission.</p>
+        <span class="feat-tag">E2E · Clés éphémères · Offline</span>
+      </div>
+    </div>
+  </div>
+  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
+    <h3>Comment c'est construit.</h3>
+    <p class="sub">Interface de commandement iOS native, pipeline IA embarqué.</p>
+    <div class="tech-grid">
+      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>SwiftUI</div>
+      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>MapKit 3D</div>
+      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>Core ML</div>
+      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>WebSocket</div>
+      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>CryptoKit</div>
+      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>Vision</div>
+    </div>
+  </div>
+  <div style="padding:60px 24px 100px;position:relative;z-index:10">
+    <div class="results rv">
+      <div class="res"><div class="res-n iris-res">Solo</div><div class="res-l">Développement</div></div>
+      <div class="res"><div class="res-n iris-res">SwiftUI</div><div class="res-l">Frontend natif</div></div>
+      <div class="res"><div class="res-n iris-res">En cours</div><div class="res-l">Statut projet</div></div>
+    </div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+     PIGEON
+══════════════════════════════════════ -->
+<section class="proj" id="pig">
+  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 15% 0%,#001a08,#000 55%)">
+    <div class="p-ico rv sc d1"
+      style="background:linear-gradient(145deg,#0a6020,#30d158);box-shadow:0 30px 80px rgba(48,209,88,.48);animation:iconFloat 4.2s 3.8s ease-in-out infinite">🕊️</div>
+    <div class="status status-wip rv d2">En développement</div>
+    <p class="p-eyebrow pig-col rv d2">Pigeon Secure Chat</p>
+    <h2 class="p-title pig-grad rv d3">Parler.<br>Librement.</h2>
+    <p class="p-tagline rv d4">La messagerie qui ne sait rien de vous.</p>
+    <p class="p-desc rv d5">Pigeon Secure Chat redéfinit la confidentialité numérique. Chiffrement de niveau militaire, zéro métadonnée, identité sans numéro de téléphone — pour ceux qui ne font aucun compromis.</p>
+    <div class="build-meta rv d5">
+      <div class="bm-item"><div class="bm-v pig-bm">Solo</div><div class="bm-l">A → Z</div></div>
+      <div class="bm-sep"></div>
+      <div class="bm-item"><div class="bm-v pig-bm">iOS</div><div class="bm-l">SwiftUI</div></div>
+      <div class="bm-sep"></div>
+      <div class="bm-item"><div class="bm-v pig-bm">En cours</div><div class="bm-l">Développement</div></div>
+    </div>
+    <div class="chips rv d6">
+      <span class="chip pig-chip">Double Ratchet</span><span class="chip pig-chip">Zéro métadonnée</span>
+      <span class="chip pig-chip">Messages éphémères</span><span class="chip pig-chip">Anonymat complet</span>
+      <span class="chip pig-chip">P2P décentralisé</span><span class="chip pig-chip">Open source</span>
+    </div>
+  </div>
+  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
+    <div class="narrative rv">
+      <div class="nar-cell">
+        <div class="nar-label">Le problème</div>
+        <h3>Signal est encore trop lié à un numéro. Telegram pas assez sécurisé.</h3>
+        <p>Toutes les messageries "sécurisées" requièrent un numéro de téléphone, collectent des métadonnées ou dépendent d'un serveur central — autant de vecteurs d'attaque et de surveillance.</p>
+      </div>
+      <div class="nar-cell">
+        <div class="nar-label">Ma réponse</div>
+        <h3>Zéro numéro. Zéro serveur central. Zéro compromis.</h3>
+        <p>Identité purement cryptographique, Double Ratchet pour chaque message, réseau P2P optionnel, messages éphémères et aucune métadonnée collectée — ni par l'app, ni par les serveurs.</p>
+      </div>
+    </div>
+  </div>
+  <div class="features-title rv" style="position:relative;z-index:10">
+    <h3>Sécurité.<br>Par conception.</h3>
+    <p>Chaque couche est pensée pour protéger, pas pour surveiller.</p>
+  </div>
+  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
+    <div class="feat-grid rv">
+      <div class="feat"><div class="feat-glow" style="background:#30d158"></div>
+        <div class="feat-num">01 — Chiffrement</div><span class="feat-ico">🔐</span>
+        <h4>Chiffrement Militaire</h4>
+        <p>Double Ratchet Algorithm + X3DH. Chaque message a sa propre clé éphémère. Même en cas de compromission d'une clé, les messages passés restent protégés.</p>
+        <span class="feat-tag">Double Ratchet · X3DH · PFS</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#30d158"></div>
+        <div class="feat-num">02 — Ephémère</div><span class="feat-ico">👻</span>
+        <h4>Messages Éphémères</h4>
+        <p>Disparition configurable de 5 secondes à 1 an. Suppression cryptographique garantie côté serveur et client — irrécupérable.</p>
+        <span class="feat-tag">5s → 1 an · Suppression garantie</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#30d158"></div>
+        <div class="feat-num">03 — Identité</div><span class="feat-ico">🕶️</span>
+        <h4>Anonymat Total</h4>
+        <p>Aucun numéro, aucun email, aucun nom réel. L'identité est une clé cryptographique générée localement. Zéro lien avec l'identité réelle.</p>
+        <span class="feat-tag">Clé locale · Zéro PII</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#30d158"></div>
+        <div class="feat-num">04 — Réseau</div><span class="feat-ico">🌐</span>
+        <h4>Architecture Décentralisée</h4>
+        <p>Mode P2P intégré, aucun point de défaillance central, résistant à la censure et aux coupures réseau. Le réseau reste fonctionnel sans infrastructure centrale.</p>
+        <span class="feat-tag">P2P · Anti-censure · Résilient</span>
+      </div>
+    </div>
+  </div>
+  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
+    <h3>Comment c'est construit.</h3>
+    <p class="sub">Cryptographie native iOS, protocole Signal implémenté from scratch.</p>
+    <div class="tech-grid">
+      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>SwiftUI</div>
+      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>CryptoKit</div>
+      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>Network.framework</div>
+      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>Multipeer</div>
+      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>X3DH Protocol</div>
+      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>Double Ratchet</div>
+    </div>
+  </div>
+  <div style="padding:60px 24px 100px;position:relative;z-index:10">
+    <div class="results rv">
+      <div class="res"><div class="res-n pig-res">Solo</div><div class="res-l">Développement</div></div>
+      <div class="res"><div class="res-n pig-res">SwiftUI</div><div class="res-l">Frontend natif</div></div>
+      <div class="res"><div class="res-n pig-res">En cours</div><div class="res-l">Statut projet</div></div>
+    </div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- ══════════════════════════════════════
+     FAMILY
+══════════════════════════════════════ -->
+<section class="proj" id="fam">
+  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 15% 110%,#1a0008,#000 55%)">
+    <div class="p-ico rv sc d1"
+      style="background:linear-gradient(145deg,#8c0025,#ff375f);box-shadow:0 30px 80px rgba(255,55,95,.48);animation:iconFloat 4.8s 4s ease-in-out infinite">🏠</div>
+    <div class="status status-wip rv d2">En développement</div>
+    <p class="p-eyebrow fam-col rv d2">Family</p>
+    <h2 class="p-title fam-grad rv d3">Vivre.<br>Ensemble.</h2>
+    <p class="p-tagline rv d4">L'OS de votre famille.</p>
+    <p class="p-desc rv d5">Family est le premier système d'exploitation conçu pour la cellule familiale. Calendrier, tâches, budget, localisation et mémoire commune — tout ce qui fait tourner une famille, dans une seule app magnifique.</p>
+    <div class="build-meta rv d5">
+      <div class="bm-item"><div class="bm-v fam-bm">Solo</div><div class="bm-l">A → Z</div></div>
+      <div class="bm-sep"></div>
+      <div class="bm-item"><div class="bm-v fam-bm">iOS</div><div class="bm-l">SwiftUI</div></div>
+      <div class="bm-sep"></div>
+      <div class="bm-item"><div class="bm-v fam-bm">En cours</div><div class="bm-l">Développement</div></div>
+    </div>
+    <div class="chips rv d6">
+      <span class="chip fam-chip">Calendrier partagé</span><span class="chip fam-chip">Tâches & chores</span>
+      <span class="chip fam-chip">Budget familial</span><span class="chip fam-chip">Localisation live</span>
+      <span class="chip fam-chip">Album partagé</span><span class="chip fam-chip">Profils enfants</span>
+    </div>
+  </div>
+  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
+    <div class="narrative rv">
+      <div class="nar-cell">
+        <div class="nar-label">Le problème</div>
+        <h3>Organiser une famille, c'est gérer 10 apps différentes.</h3>
+        <p>Agenda sur une app, budget sur une autre, localisation sur une troisième, listes de tâches éparpillées — aucun outil ne centralise la logistique familiale de façon fluide et belle.</p>
+      </div>
+      <div class="nar-cell">
+        <div class="nar-label">Ma réponse</div>
+        <h3>Un OS familial. Un seul endroit. Tout dedans.</h3>
+        <p>Calendrier partagé intelligent, gestion des tâches avec système de récompenses pour les enfants, budget familial, localisation temps réel et album de souvenirs partagé — dans une seule app cohérente.</p>
+      </div>
+    </div>
+  </div>
+  <div class="features-title rv" style="position:relative;z-index:10">
+    <h3>La famille,<br>organisée.</h3>
+    <p>Chaque module répond à un besoin familial quotidien.</p>
+  </div>
+  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
+    <div class="feat-grid rv">
+      <div class="feat"><div class="feat-glow" style="background:#ff375f"></div>
+        <div class="feat-num">01 — Agenda</div><span class="feat-ico">📆</span>
+        <h4>Calendrier Familial Intelligent</h4>
+        <p>Disponibilités croisées automatiques, rappels contextuels, synchronisation instantanée entre tous les membres. Plus jamais de double réservation.</p>
+        <span class="feat-tag">Sync instantanée · Rappels IA</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#ff375f"></div>
+        <div class="feat-num">02 — Tâches</div><span class="feat-ico">✅</span>
+        <h4>Chores & Récompenses</h4>
+        <p>Répartition équitable automatique des tâches du foyer. Système de points et récompenses pour motiver les enfants et valoriser leur contribution.</p>
+        <span class="feat-tag">Gamification · Équitable</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#ff375f"></div>
+        <div class="feat-num">03 — Budget</div><span class="feat-ico">💰</span>
+        <h4>Finance Familiale</h4>
+        <p>Dépenses communes trackées en temps réel, argent de poche des enfants géré, objectifs d'épargne partagés. Visualisation claire et alertes intelligentes.</p>
+        <span class="feat-tag">Dépenses communes · Épargne</span>
+      </div>
+      <div class="feat"><div class="feat-glow" style="background:#ff375f"></div>
+        <div class="feat-num">04 — Localisation</div><span class="feat-ico">📍</span>
+        <h4>Cercle de Confiance</h4>
+        <p>Localisation temps réel des membres du cercle de confiance. Zones sûres configurables, alertes d'arrivée automatiques, mode discret pour les ados.</p>
+        <span class="feat-tag">Zones sûres · Alertes auto</span>
+      </div>
+    </div>
+  </div>
+  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
+    <h3>Comment c'est construit.</h3>
+    <p class="sub">Écosystème familial synchronisé, natif iOS.</p>
+    <div class="tech-grid">
+      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>SwiftUI</div>
+      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>CloudKit</div>
+      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>CoreLocation</div>
+      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>EventKit</div>
+      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>SwiftData</div>
+      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>Notifications</div>
+    </div>
+  </div>
+  <div style="padding:60px 24px 100px;position:relative;z-index:10">
+    <div class="results rv">
+      <div class="res"><div class="res-n fam-res">Solo</div><div class="res-l">Développement</div></div>
+      <div class="res"><div class="res-n fam-res">SwiftUI</div><div class="res-l">Frontend natif</div></div>
+      <div class="res"><div class="res-n fam-res">En cours</div><div class="res-l">Statut projet</div></div>
+    </div>
+  </div>
+</section>
+<div class="div"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-links">
+    <a href="#meal">Meal</a><a href="#prom">Prométhée</a><a href="#iris">Iris</a>
+    <a href="#pig">Pigeon</a><a href="#fam">Family</a>
+    <a href="mailto:contact@aubin.dev">Contact</a>
+    <a href="#">GitHub</a><a href="#">LinkedIn</a>
+  </div>
+  <p>Copyright &copy; 2026 Aubin. Tous droits réservés.<br>
+    Product Builder · SwiftUI · Orchestration IA</p>
+</footer>
+
+<style>
+@keyframes iconFloat{
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-8px) rotate(1deg)}
+}
+</style>
+
+<script>
+/* ══ CURSOR ══ */
+const C1=document.getElementById('cur'),C2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function loop(){
+  rx+=(mx-rx)*.15;ry+=(my-ry)*.15;
+  C1.style.left=mx+'px';C1.style.top=my+'px';
+  C2.style.left=rx+'px';C2.style.top=ry+'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button,.feat,.chip,.p-ico,.si,.btn,.tech,.card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('ch'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('ch'));
+});
+
+/* ══ PRELOADER ══ */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('ld').classList.add('out');
+    document.getElementById('nav').classList.add('show');
+  },1400);
+});
+
+/* ══ HERO TITLE ══ */
+const lines=['Des apps','\nqui changent tout.'];
+const hh=document.getElementById('hh');
+let delay=1.0;
+lines.forEach(line=>{
+  if(line.startsWith('\n')){hh.appendChild(document.createElement('br'));line=line.slice(1)}
+  [...line].forEach(ch=>{
+    const s=document.createElement('span');
+    s.className='ch';
+    s.textContent=ch===' '?'\u00a0':ch;
+    s.style.animationDelay=delay+'s';
+    delay+=0.028;
+    hh.appendChild(s);
+  });
+});
+
+/* ══ HERO KPIs ══ */
+function animNum(el,target,suffix,dur=1200){
+  let s=null;
+  const ease=t=>1-Math.pow(1-t,3);
+  const step=ts=>{
+    if(!s)s=ts;
+    const p=Math.min((ts-s)/dur,1);
+    el.textContent=Math.round(ease(p)*target)+suffix;
+    if(p<1)requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+setTimeout(()=>{
+  animNum(document.getElementById('kpi1'),180,'h',1000);
+  animNum(document.getElementById('kpi2'),200,'€',1000);
+  animNum(document.getElementById('kpi3'),5,' projets',900);
+},2200);
+
+/* ══ PARTICLES ══ */
+const cv=document.getElementById('cv'),cx2=cv.getContext('2d');
+let W,H;
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+rsz();window.addEventListener('resize',rsz);
+
+const PALS={
+  hero:[[140,120,255],[200,120,255],[80,160,255]],
+  meal:[[255,149,0],[255,200,0],[255,100,30]],
+  prom:[[191,90,242],[140,70,240],[220,140,255]],
+  iris:[[10,132,255],[46,213,200],[100,180,255]],
+  pig:[[48,209,88],[30,180,100],[150,255,180]],
+  fam:[[255,55,95],[255,100,140],[255,160,180]],
+};
+let pal=PALS.hero;
+
+class Pt{
+  constructor(){this.init(true)}
+  init(r){
+    this.x=Math.random()*W;this.y=r?Math.random()*H:H+8;
+    this.rx=Math.random()*1.1+.25;
+    this.vx=(Math.random()-.5)*.22;this.vy=-(Math.random()*.35+.12);
+    this.life=0;this.max=200+Math.random()*240;
+    const c=pal[Math.floor(Math.random()*pal.length)];
+    this.r_=c[0];this.g_=c[1];this.b_=c[2];
+  }
+  draw(){
+    const a=Math.sin(this.life/this.max*Math.PI)*.5;
+    cx2.beginPath();cx2.arc(this.x,this.y,this.rx,0,Math.PI*2);
+    cx2.fillStyle=`rgba(${this.r_},${this.g_},${this.b_},${a})`;
+    cx2.fill();
+    this.x+=this.vx;this.y+=this.vy;this.life++;
+    if(this.life>=this.max)this.init(false);
+  }
+}
+const pts=Array.from({length:140},()=>new Pt());
+let pmx=W/2,pmy=H/2;
+document.addEventListener('mousemove',e=>{pmx=e.clientX;pmy=e.clientY});
+(function frame(){
+  cx2.clearRect(0,0,W,H);
+  if(Math.random()<.6){
+    const p=pts[Math.floor(Math.random()*pts.length)];
+    if(p.life>p.max*.6){p.x=pmx+(Math.random()-.5)*120;p.y=pmy+(Math.random()-.5)*120;p.max=70;p.life=0}
+  }
+  pts.forEach(p=>p.draw());
+  requestAnimationFrame(frame);
+})();
+
+/* ══ BG MORPH ══ */
+const GRADS={
+  hero:'radial-gradient(ellipse 100% 60% at 50% 0%,#080820,#000)',
+  meal:'radial-gradient(ellipse 130% 80% at 85% 105%,#180b00,#000 50%)',
+  prom:'radial-gradient(ellipse 130% 80% at 10% 0%,#0e001f,#000 50%)',
+  iris:'radial-gradient(ellipse 130% 80% at 88% 105%,#001328,#000 50%)',
+  pig:'radial-gradient(ellipse 130% 80% at 10% 0%,#001608,#000 50%)',
+  fam:'radial-gradient(ellipse 130% 80% at 12% 105%,#1a0008,#000 50%)',
+};
+const GBG=document.getElementById('gbg');
+function setScene(k){
+  GBG.style.background=GRADS[k]||GRADS.hero;
+  pal=PALS[k]||PALS.hero;
+}
+
+/* ══ SECTION OBSERVER ══ */
+const secObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const id=e.target.id||'';
+    const k={'meal':'meal','prom':'prom','iris':'iris','pig':'pig','fam':'fam','top':'hero'}[id]||'hero';
+    setScene(k);
+    document.querySelectorAll('.nr a').forEach(a=>a.classList.toggle('on',a.dataset.s===id));
+    document.querySelectorAll('.si').forEach(s=>s.classList.toggle('on',s.dataset.s===id));
+  });
+},{threshold:.25});
+['top','meal','prom','iris','pig','fam'].forEach(id=>{
+  const el=document.getElementById(id);if(el)secObs.observe(el);
+});
+
+/* ══ SCROLL REVEAL ══ */
+const rvObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')});
+},{threshold:.08,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.rv').forEach(el=>rvObs.observe(el));
+
+/* ══ COUNTER ══ */
+const ctObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target,tg=+el.dataset.t,sf=el.dataset.s||'';
+    if(isNaN(tg))return;
+    let s=null;const dur=1600;
+    const ease=t=>1-Math.pow(1-t,4);
+    const step=ts=>{
+      if(!s)s=ts;
+      const p=Math.min((ts-s)/dur,1);
+      el.textContent=Math.round(ease(p)*tg)+sf;
+      if(p<1)requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    ctObs.unobserve(el);
+  });
+},{threshold:.6});
+document.querySelectorAll('[data-t]').forEach(el=>ctObs.observe(el));
+
+/* ══ MAGNETIC BUTTONS ══ */
+document.querySelectorAll('.btn').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+    btn.style.transform=`translate(${dx*.3}px,${dy*.3}px) scale(1.04)`;
+  });
+  btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
+});
+
+/* ══ FEATURE CARD GLOW ══ */
+document.querySelectorAll('.feat').forEach(f=>{
+  const glow=f.querySelector('.feat-glow');
+  f.addEventListener('mousemove',e=>{
+    const r=f.getBoundingClientRect();
+    if(glow){glow.style.left=(e.clientX-r.left)+'px';glow.style.top=(e.clientY-r.top)+'px'}
+  });
+});
+
+/* ══ ICON 3D TILT ══ */
+document.querySelectorAll('.proj-reveal').forEach(sec=>{
+  const ico=sec.querySelector('.p-ico');
+  if(!ico)return;
+  sec.addEventListener('mousemove',e=>{
+    const r=ico.getBoundingClientRect();
+    const dx=(e.clientX-(r.left+r.width/2))/90,dy=(e.clientY-(r.top+r.height/2))/90;
+    ico.style.transform=`perspective(500px) rotateX(${-dy*10}deg) rotateY(${dx*10}deg) scale(1.07) translateY(0)`;
+    ico.style.animationPlayState='paused';
+  });
+  sec.addEventListener('mouseleave',()=>{
+    ico.style.transform='';ico.style.animationPlayState='running';
+  });
+});
+
+/* ══ SMOOTH NAV LINKS ══ */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const id=a.getAttribute('href').slice(1);
+    const t=document.getElementById(id);
+    if(!t)return;
+    e.preventDefault();
+    t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>
