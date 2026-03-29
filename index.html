@@ -523,6 +523,62 @@ section{position:relative;z-index:10}
 
 /* ══ LAUNCHKIT SECTION ══ */
 .lk-section{padding:96px 24px;text-align:center;max-width:720px;margin:0 auto;position:relative;z-index:10}
+
+/* ── Browser Frame ── */
+.browser-wrap{max-width:960px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
+.browser-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-30%);
+  width:800px;height:400px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(100,160,255,.07) 0%,transparent 70%);
+  pointer-events:none;filter:blur(50px)}
+.browser-frame{
+  border-radius:12px;overflow:hidden;
+  background:#1c1c1e;
+  box-shadow:
+    0 0 0 .5px rgba(255,255,255,.1),
+    0 2px 4px rgba(0,0,0,.2),
+    0 12px 32px rgba(0,0,0,.4),
+    0 48px 80px -16px rgba(0,0,0,.5);
+  transition:transform .6s var(--e3),box-shadow .6s var(--e3)}
+.browser-frame:hover{transform:translateY(-4px) scale(1.005);
+  box-shadow:
+    0 0 0 .5px rgba(255,255,255,.14),
+    0 4px 8px rgba(0,0,0,.2),
+    0 20px 48px rgba(0,0,0,.45),
+    0 60px 100px -16px rgba(0,0,0,.5),
+    0 0 60px rgba(100,160,255,.04)}
+.browser-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 16px;
+  background:linear-gradient(180deg,#2c2c2e,#252527);
+  border-bottom:.5px solid rgba(255,255,255,.06)}
+.browser-dots{display:flex;gap:6px}
+.browser-dots span{width:10px;height:10px;border-radius:50%}
+.browser-dots span:nth-child(1){background:#ff5f57}
+.browser-dots span:nth-child(2){background:#febc2e}
+.browser-dots span:nth-child(3){background:#28c840}
+.browser-url{
+  flex:1;margin:0 8px;padding:5px 12px;
+  background:rgba(255,255,255,.06);border-radius:6px;
+  font-size:11px;color:var(--t4);letter-spacing:.2px;
+  font-family:SF Mono,monospace;text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.browser-body{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:#0a0a0a}
+.browser-body iframe{width:100%;height:100%;border:none;display:block;pointer-events:none;
+  transition:opacity .4s ease}
+.browser-frame:hover .browser-body iframe{pointer-events:auto}
+.browser-hint{
+  position:absolute;bottom:16px;right:16px;
+  padding:6px 14px;border-radius:8px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  font-size:11px;color:var(--t3);letter-spacing:.3px;
+  opacity:1;transition:opacity .3s ease;pointer-events:none}
+.browser-frame:hover .browser-hint{opacity:0}
+@media(max-width:600px){
+  .browser-body{aspect-ratio:9/14}
+  .browser-bar{padding:10px 12px}
+  .browser-dots span{width:8px;height:8px}
+  .browser-url{font-size:10px;padding:4px 10px}
+}
 .lk-section h2{font-size:clamp(30px,4.5vw,48px);font-weight:700;letter-spacing:-1.5px;
   margin-bottom:14px;line-height:1.06}
 .lk-section .lk-sub{font-size:clamp(15px,1.7vw,18px);color:var(--t3);line-height:1.72;
@@ -886,6 +942,18 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
     </div>
     <a href="https://aubathias.github.io/launchkit/" target="_blank" rel="noopener" class="btn bg" style="margin-top:48px;display:inline-flex;align-items:center;gap:8px">
       Découvrir LaunchKit <span style="font-size:18px">↗</span></a>
+  </div>
+  <div class="browser-wrap rv" style="padding-bottom:96px">
+    <div class="browser-frame">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">aubathias.github.io/launchkit</div>
+      </div>
+      <div class="browser-body">
+        <iframe src="https://aubathias.github.io/launchkit/" loading="lazy" title="LaunchKit Studio"></iframe>
+        <div class="browser-hint">Survoler pour interagir</div>
+      </div>
+    </div>
   </div>
 </section>
 <div class="div"></div>
