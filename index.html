@@ -304,58 +304,94 @@ section{position:relative;z-index:10}
 
 /* ── IPHONE SHOWCASE — Apple cinematic ── */
 .showcase{
-  padding:0 24px 120px;position:relative;z-index:10;overflow:hidden}
-.showcase-title{text-align:center;padding:96px 24px 56px}
+  padding:0 24px 140px;position:relative;z-index:10;overflow:visible}
+.showcase::before{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-40%);
+  width:900px;height:500px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,149,0,.08) 0%,transparent 70%);
+  pointer-events:none;filter:blur(40px)}
+.showcase-title{text-align:center;padding:96px 24px 64px}
 .showcase-title h3{font-size:clamp(30px,4.5vw,52px);font-weight:700;
   letter-spacing:-1.5px;line-height:1.06;margin-bottom:14px}
 .showcase-title p{font-size:clamp(15px,1.7vw,18px);color:var(--t3);
   max-width:520px;margin:0 auto;line-height:1.65}
 .showcase-row{
-  display:flex;gap:32px;justify-content:center;align-items:flex-end;
-  max-width:1100px;margin:0 auto;flex-wrap:wrap}
+  display:flex;gap:28px;justify-content:center;align-items:center;
+  max-width:1200px;margin:0 auto;perspective:1200px}
 .iphone{
   position:relative;flex-shrink:0;
-  width:220px;
-  background:#1c1c1e;
-  border-radius:36px;
-  padding:12px;
+  width:248px;
+  background:linear-gradient(165deg,#3a3a3c 0%,#2c2c2e 15%,#1c1c1e 50%,#141414 100%);
+  border-radius:44px;
+  padding:10px;
   box-shadow:
-    0 0 0 1px rgba(255,255,255,.08),
-    0 40px 80px -20px rgba(0,0,0,.7),
-    0 20px 40px -10px rgba(0,0,0,.5),
-    inset 0 1px 0 rgba(255,255,255,.06);
-  transition:transform .6s var(--e3);
-  cursor:none}
-.iphone:hover{transform:translateY(-12px) scale(1.02)}
+    0 0 0 .5px rgba(255,255,255,.18),
+    inset 0 .5px 0 rgba(255,255,255,.15),
+    inset 0 -.5px 0 rgba(255,255,255,.04),
+    0 1px 2px rgba(0,0,0,.3),
+    0 8px 16px rgba(0,0,0,.35),
+    0 32px 64px -8px rgba(0,0,0,.55),
+    0 64px 100px -16px rgba(0,0,0,.45);
+  transition:transform .7s var(--e3),box-shadow .7s var(--e3);
+  cursor:none;will-change:transform}
 .iphone::before{
-  content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);
-  width:80px;height:22px;background:#000;border-radius:0 0 14px 14px;z-index:2}
+  content:'';position:absolute;inset:1px;border-radius:43px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,transparent 40%,transparent 90%,rgba(255,255,255,.02) 100%);
+  pointer-events:none;z-index:1}
+.iphone:hover{transform:translateY(-16px) scale(1.03);
+  box-shadow:
+    0 0 0 .5px rgba(255,255,255,.22),
+    inset 0 .5px 0 rgba(255,255,255,.18),
+    inset 0 -.5px 0 rgba(255,255,255,.05),
+    0 1px 2px rgba(0,0,0,.2),
+    0 20px 40px rgba(0,0,0,.4),
+    0 60px 100px -12px rgba(0,0,0,.5),
+    0 0 80px rgba(255,149,0,.05)}
 .iphone-screen{
-  width:100%;aspect-ratio:9/19.5;border-radius:24px;overflow:hidden;
-  position:relative;background:#000}
-.iphone-screen img{width:100%;height:100%;object-fit:cover;display:block}
+  width:100%;aspect-ratio:9/19.5;border-radius:34px;overflow:hidden;
+  position:relative;background:#000;z-index:2}
+.iphone-screen img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 .iphone-label{
-  text-align:center;margin-top:20px}
-.iphone-label h4{font-size:14px;font-weight:600;letter-spacing:-.2px;
+  text-align:center;margin-top:24px}
+.iphone-label h4{font-size:15px;font-weight:600;letter-spacing:-.2px;
   color:var(--t1);margin-bottom:4px}
-.iphone-label p{font-size:11px;color:var(--t4);letter-spacing:.3px}
+.iphone-label p{font-size:11px;color:var(--t4);letter-spacing:.5px;text-transform:uppercase;
+  font-weight:500}
 
-/* center pair */
-.iphone:nth-child(2),.iphone:nth-child(3){transform:translateY(-20px)}
-.iphone:nth-child(2):hover,.iphone:nth-child(3):hover{transform:translateY(-32px) scale(1.02)}
+/* stagger — center two raised */
+.iphone:nth-child(1){transform:translateY(24px)}
+.iphone:nth-child(1):hover{transform:translateY(8px) scale(1.03)}
+.iphone:nth-child(4){transform:translateY(24px)}
+.iphone:nth-child(4):hover{transform:translateY(8px) scale(1.03)}
 
-@media(max-width:860px){
+/* subtle side tilt on outer phones */
+.iphone:nth-child(1){transform:translateY(24px) rotateY(3deg)}
+.iphone:nth-child(1):hover{transform:translateY(8px) rotateY(0deg) scale(1.03)}
+.iphone:nth-child(4){transform:translateY(24px) rotateY(-3deg)}
+.iphone:nth-child(4):hover{transform:translateY(8px) rotateY(0deg) scale(1.03)}
+
+@media(max-width:1000px){
   .showcase-row{gap:20px}
-  .iphone{width:180px;border-radius:30px;padding:10px}
-  .iphone-screen{border-radius:20px}
-  .iphone::before{width:60px;height:18px;border-radius:0 0 10px 10px;top:6px}
+  .iphone{width:208px;border-radius:38px;padding:8px}
+  .iphone-screen{border-radius:30px}
+  .iphone::before{border-radius:37px}
+}
+@media(max-width:860px){
+  .showcase-row{gap:16px;perspective:none}
+  .iphone{width:176px;border-radius:34px;padding:7px}
+  .iphone-screen{border-radius:27px}
+  .iphone::before{border-radius:33px}
+  .iphone:nth-child(1),.iphone:nth-child(4){transform:translateY(16px) rotateY(0deg)}
+  .iphone:nth-child(1):hover,.iphone:nth-child(4):hover{transform:translateY(4px) scale(1.02)}
+  .iphone-label h4{font-size:13px}
 }
 @media(max-width:600px){
   .showcase-row{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;
-    padding:0 20px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;gap:16px}
-  .iphone{min-width:180px;scroll-snap-align:center}
+    padding:0 24px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;gap:14px}
+  .iphone{min-width:200px;scroll-snap-align:center}
+  .iphone:nth-child(1),.iphone:nth-child(4){transform:none}
   .iphone:nth-child(2),.iphone:nth-child(3){transform:none}
-  .iphone:nth-child(2):hover,.iphone:nth-child(3):hover{transform:translateY(-8px) scale(1.02)}
+  .iphone:hover{transform:translateY(-8px) scale(1.02)!important}
   .showcase-row::-webkit-scrollbar{display:none}
 }
 
