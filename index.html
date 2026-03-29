@@ -402,6 +402,46 @@ section{position:relative;z-index:10}
 .fam-res{background:linear-gradient(135deg,#ff375f,#ffa0b8)}
 .fam-si-dot{background:#ff375f}
 
+/* ══ SANDBOX COMPACT CARDS ══ */
+.sandbox-intro{text-align:center;padding:96px 24px 56px;max-width:720px;margin:0 auto;position:relative;z-index:10}
+.sandbox-intro h2{font-size:clamp(30px,4.5vw,48px);font-weight:700;letter-spacing:-1.5px;
+  margin-bottom:14px;line-height:1.06}
+.sandbox-intro p{font-size:clamp(15px,1.7vw,18px);color:var(--t3);line-height:1.65}
+.sandbox-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:.5px;background:rgba(255,255,255,.06);
+  max-width:var(--max);margin:0 auto 80px;
+  border-radius:22px;overflow:hidden;position:relative;z-index:10}
+.sb-card{
+  padding:40px 32px;background:rgba(8,8,8,.98);
+  transition:background .35s;cursor:none;position:relative;overflow:hidden}
+.sb-card:hover{background:rgba(14,14,14,.98)}
+.sb-ico{font-size:32px;margin-bottom:20px;display:block}
+.sb-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--t4);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sb-label::before{content:'';width:12px;height:.5px;background:currentColor}
+.sb-card h3{font-size:clamp(18px,2.2vw,22px);font-weight:600;letter-spacing:-.3px;
+  margin-bottom:10px;line-height:1.3}
+.sb-card p{font-size:13.5px;line-height:1.72;color:var(--t3)}
+.sb-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:16px}
+.sb-chip{padding:3px 9px;border-radius:980px;font-size:10px;font-weight:600;
+  letter-spacing:.2px;background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.08);
+  color:var(--t4)}
+
+/* ══ LAUNCHKIT SECTION ══ */
+.lk-section{padding:96px 24px;text-align:center;max-width:720px;margin:0 auto;position:relative;z-index:10}
+.lk-section h2{font-size:clamp(30px,4.5vw,48px);font-weight:700;letter-spacing:-1.5px;
+  margin-bottom:14px;line-height:1.06}
+.lk-section .lk-sub{font-size:clamp(15px,1.7vw,18px);color:var(--t3);line-height:1.72;
+  margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto}
+.lk-section .lk-body{font-size:15px;color:var(--t3);line-height:1.75;
+  text-align:left;max-width:600px;margin:0 auto 40px}
+
+@media(max-width:600px){
+  .sandbox-grid{grid-template-columns:1fr}
+  .sb-card{padding:28px 24px}
+}
+
 /* ══ STATUS PILL — shipped vs WIP ══ */
 .status{
   display:inline-flex;align-items:center;gap:7px;
@@ -487,10 +527,8 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
   <div class="nl">Aubin</div>
   <ul class="nr">
     <li><a href="#meal" data-s="meal">Meal</a></li>
-    <li><a href="#prom" data-s="prom">Prométhée</a></li>
-    <li><a href="#iris" data-s="iris">Iris</a></li>
-    <li><a href="#pig" data-s="pig">Pigeon</a></li>
-    <li><a href="#fam" data-s="fam">Family</a></li>
+    <li><a href="#launchkit" data-s="launchkit">LaunchKit</a></li>
+    <li><a href="#sandbox" data-s="sandbox">Sandbox</a></li>
   </ul>
 </nav>
 
@@ -498,25 +536,23 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
 <section class="hero" id="top">
   <div class="hero-pill"><span class="hero-pill-dot"></span>Disponible · 2026</div>
   <h1 class="ht" id="hh"></h1>
-  <p class="hero-sub">J'orchestre des agents IA pour livrer des apps iOS de haute qualité en SwiftUI — de l'idée à l'App Store, seul.</p>
-  <p class="hero-sub2">Cas d'école : une app complète, full stack, prête pour le Store.<br>180 heures. 200 euros. Tout compris.</p>
+  <p class="hero-sub">Je conçois des produits Apple crédibles, du cadrage au lancement. Avec une attention particulière portée à l'expérience utilisateur, aux standards Apple et à la qualité perçue.</p>
+  <p class="hero-sub2">De l'idée au prototype, puis au produit prêt à être lancé.<br>Seul, de A à Z.</p>
 
   <div class="hero-kpis">
-    <div class="kpi"><div class="kpi-n" id="kpi1">0h</div><div class="kpi-l">App complète (Meal)</div></div>
-    <div class="kpi"><div class="kpi-n" id="kpi2">0€</div><div class="kpi-l">Coût total (Meal)</div></div>
-    <div class="kpi"><div class="kpi-n" id="kpi3">0</div><div class="kpi-l">Projets en cours</div></div>
-    <div class="kpi"><div class="kpi-n">A→Z</div><div class="kpi-l">Solo sur chaque projet</div></div>
+    <div class="kpi"><div class="kpi-n" id="kpi1">0h</div><div class="kpi-l">Produit complet (Meal)</div></div>
+    <div class="kpi"><div class="kpi-n" id="kpi2">0€</div><div class="kpi-l">Budget total (Meal)</div></div>
+    <div class="kpi"><div class="kpi-n">A→Z</div><div class="kpi-l">Conception & exécution</div></div>
   </div>
 
   <div class="hero-btns">
-    <a href="#meal" class="btn bw">Voir mes projets</a>
-    <a href="mailto:contact@aubin.dev" class="btn bg">Me contacter →</a>
+    <a href="#meal" class="btn bw">Voir Meal</a>
+    <a href="#launchkit" class="btn bg">Découvrir LaunchKit →</a>
   </div>
 
   <div class="hero-stack">
     <span class="sp">SwiftUI</span><span class="sp">Orchestration IA</span>
-    <span class="sp">Full Stack</span><span class="sp">iOS</span>
-    <span class="sp">App Store</span><span class="sp">Product Design</span>
+    <span class="sp">iOS natif</span><span class="sp">Product Design</span>
     <span class="sp">UX</span>
   </div>
 
@@ -526,33 +562,30 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
   </div>
 </section>
 
+<!-- PROOF / INTRO -->
+<div style="padding:80px 24px 64px;max-width:720px;margin:0 auto;text-align:center;position:relative;z-index:10" class="rv">
+  <p style="font-size:clamp(15px,1.7vw,18px);line-height:1.75;color:var(--t2)">Je construis des produits iOS avec une approche orientée clarté, exécution et usage réel. Mon travail s'articule autour d'un produit principal, <strong style="color:var(--t1)">Meal</strong>, d'un cadre d'exécution, <strong style="color:var(--t1)">LaunchKit Studio</strong>, et de plusieurs sandbox personnelles qui explorent l'IA on-device, le command & control, la synchronisation cross-device et la messagerie sécurisée.</p>
+</div>
+
 <!-- STRIP -->
 <div class="strip" id="strip">
   <a href="#meal" class="si" data-s="meal">
     <div class="si-ico" style="background:rgba(255,149,0,.13)">🍽️</div>
     <div class="si-lbl">Meal</div><div class="si-dot meal-si-dot"></div>
   </a>
-  <a href="#prom" class="si" data-s="prom">
-    <div class="si-ico" style="background:rgba(191,90,242,.13)">🔬</div>
-    <div class="si-lbl">Prométhée</div><div class="si-dot prom-si-dot"></div>
+  <a href="#launchkit" class="si" data-s="launchkit">
+    <div class="si-ico" style="background:rgba(100,160,255,.13)">⚡</div>
+    <div class="si-lbl">LaunchKit</div><div class="si-dot" style="background:#64a0ff"></div>
   </a>
-  <a href="#iris" class="si" data-s="iris">
-    <div class="si-ico" style="background:rgba(10,132,255,.13)">🛸</div>
-    <div class="si-lbl">Iris</div><div class="si-dot iris-si-dot"></div>
-  </a>
-  <a href="#pig" class="si" data-s="pig">
-    <div class="si-ico" style="background:rgba(48,209,88,.13)">🕊️</div>
-    <div class="si-lbl">Pigeon</div><div class="si-dot pig-si-dot"></div>
-  </a>
-  <a href="#fam" class="si" data-s="fam">
-    <div class="si-ico" style="background:rgba(255,55,95,.13)">🏠</div>
-    <div class="si-lbl">Family</div><div class="si-dot fam-si-dot"></div>
+  <a href="#sandbox" class="si" data-s="sandbox">
+    <div class="si-ico" style="background:rgba(255,255,255,.06)">🧪</div>
+    <div class="si-lbl">Sandbox</div><div class="si-dot" style="background:rgba(255,255,255,.5)"></div>
   </a>
 </div>
 <div class="div"></div>
 
 <!-- ══════════════════════════════════════
-     MEAL
+     MEAL — Produit principal
 ══════════════════════════════════════ -->
 <section class="proj" id="meal">
 
@@ -560,11 +593,11 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
   <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 80% 110%,#1c0a00,#000 55%)">
     <div class="p-ico rv sc d1"
       style="background:linear-gradient(145deg,#d07200,#ffbf00);box-shadow:0 30px 80px rgba(255,149,0,.52);animation:iconFloat 4s 3s ease-in-out infinite">🍽️</div>
-    <div class="status status-shipped rv d2">App Store Ready</div>
+    <div class="status status-shipped rv d2">Produit principal</div>
     <p class="p-eyebrow meal-col rv d2">Meal</p>
-    <h2 class="p-title meal-grad rv d3">La charge<br>mentale,<br>zéro.</h2>
-    <p class="p-tagline rv d4">L'OS du repas. Du frigo à la table.</p>
-    <p class="p-desc rv d5">Un problème réel — la charge mentale liée aux repas, leur organisation, leur préparation et les courses. Une réponse totale : un système all-in-one conçu pour éliminer cette friction, pour toujours.</p>
+    <h2 class="p-title meal-grad rv d3">Une décision<br>de moins,<br>chaque jour.</h2>
+    <p class="p-tagline rv d4">Organisation des repas, de l'inspiration à l'assiette.</p>
+    <p class="p-desc rv d5">Meal est mon produit le plus abouti. Une app iOS pensée pour simplifier l'organisation des repas — de la planification à la liste de courses, jusqu'au moment de cuisiner. Le travail a porté autant sur la promesse produit que sur la cohérence de l'expérience et le respect de la vie privée.</p>
 
     <div class="build-meta rv d5">
       <div class="bm-item">
@@ -574,7 +607,7 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
       <div class="bm-sep"></div>
       <div class="bm-item">
         <div class="bm-v meal-bm">200€</div>
-        <div class="bm-l">Coût total</div>
+        <div class="bm-l">Budget total</div>
       </div>
       <div class="bm-sep"></div>
       <div class="bm-item">
@@ -583,18 +616,18 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
       </div>
       <div class="bm-sep"></div>
       <div class="bm-item">
-        <div class="bm-v meal-bm">✓ Store</div>
-        <div class="bm-l">App Store Ready</div>
+        <div class="bm-v meal-bm">2 mai</div>
+        <div class="bm-l">Lancement</div>
       </div>
     </div>
 
     <div class="chips rv d6">
-      <span class="chip meal-chip">SwiftUI</span>
-      <span class="chip meal-chip">Planning intelligent</span>
-      <span class="chip meal-chip">Mode auto 1s</span>
-      <span class="chip meal-chip">Courses auto</span>
+      <span class="chip meal-chip">Planification</span>
+      <span class="chip meal-chip">Liste de courses</span>
       <span class="chip meal-chip">Mode cuisine</span>
-      <span class="chip meal-chip">Préférences santé</span>
+      <span class="chip meal-chip">Privacy-first</span>
+      <span class="chip meal-chip">iCloud E2E</span>
+      <span class="chip meal-chip">6€/mois</span>
     </div>
   </div>
 
@@ -603,13 +636,13 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
     <div class="narrative rv">
       <div class="nar-cell">
         <div class="nar-label">Le problème</div>
-        <h3>La charge mentale du repas est épuisante.</h3>
-        <p>Quoi cuisiner ? Ce qu'il faut acheter. Qu'est-ce qui reste dans le frigo. Comment équilibrer la semaine. Des décisions répétées, quotidiennes, chronophages — qui finissent toujours en repas improvisés et courses bâclées.</p>
+        <h3>L'alimentation échoue sur la friction, pas sur le manque de recettes.</h3>
+        <p>Choisir, planifier, acheter, exécuter. Ce sont des décisions répétées, quotidiennes et chronophages — qui finissent toujours en repas improvisés et courses bâclées.</p>
       </div>
       <div class="nar-cell">
         <div class="nar-label">Ma réponse</div>
-        <h3>Un OS complet. Du catalogue à la cuisine.</h3>
-        <p>Meal centralise tout : catalogue de recettes avec préférences alimentaires et santé, planning automatique en une seconde, liste de courses intelligente générée instantanément, suivi du menu en temps réel et mode cuisine intégré.</p>
+        <h3>Une expérience iOS simple, calme et directe.</h3>
+        <p>Catalogue de recettes avec préférences santé, planning automatique en une seconde, liste de courses optimisée, suivi du menu en temps réel et mode cuisine intégré. Stockage local, sync iCloud chiffrée, zéro tracking.</p>
       </div>
     </div>
   </div>
@@ -627,8 +660,8 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
         <div class="feat-glow" style="background:#ff9500"></div>
         <div class="feat-num">01 — Planning</div>
         <span class="feat-ico">📅</span>
-        <h4>Planification Manuel & Auto</h4>
-        <p>Parcourez un catalogue strict de recettes avec vos préférences alimentaires et de santé définies. Ou laissez le mode automatique générer toute votre semaine en une seconde — équilibré, varié, adapté.</p>
+        <h4>Planification manuelle & auto</h4>
+        <p>Un catalogue de recettes avec préférences alimentaires et de santé. Le mode automatique génère une semaine en une seconde — équilibré, varié, adapté.</p>
         <span class="feat-tag">Mode auto · 1 seconde</span>
       </div>
 
@@ -636,8 +669,8 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
         <div class="feat-glow" style="background:#ff9500"></div>
         <div class="feat-num">02 — Courses</div>
         <span class="feat-ico">🛒</span>
-        <h4>Liste Intelligente Instantanée</h4>
-        <p>La liste de courses se génère automatiquement depuis votre planning. Quantités exactes, organisée par catégorie. Avec la possibilité d'ajouter manuellement des articles pour rester 100% libre en magasin.</p>
+        <h4>Liste optimisée</h4>
+        <p>Générée depuis le planning. Quantités exactes, organisée par catégorie. Ajout manuel possible pour rester libre en magasin.</p>
         <span class="feat-tag">Génération auto · Ajout manuel</span>
       </div>
 
@@ -645,8 +678,8 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
         <div class="feat-glow" style="background:#ff9500"></div>
         <div class="feat-num">03 — Mon Menu</div>
         <span class="feat-ico">👁️</span>
-        <h4>Vue en Temps Réel du Menu</h4>
-        <p>Un onglet dédié pour visualiser ce qui reste à cuisiner, les recettes déjà préparées, et anticiper la semaine. Plus jamais de question "on mange quoi ce soir ?" sans réponse immédiate.</p>
+        <h4>Vue en temps réel</h4>
+        <p>Visualiser ce qui reste à cuisiner, ce qui est prêt, et anticiper la semaine. Une seule vue pour savoir où on en est.</p>
         <span class="feat-tag">Recettes restantes · À cuisiner</span>
       </div>
 
@@ -654,18 +687,25 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
         <div class="feat-glow" style="background:#ff9500"></div>
         <div class="feat-num">04 — Cuisine</div>
         <span class="feat-ico">👨‍🍳</span>
-        <h4>Mode Cuisine Intégré</h4>
-        <p>Lancez le mode cuisine directement depuis l'app. Instructions étape par étape, minuteries intégrées, quantités adaptées au nombre de personnes. Du planning à l'assiette sans friction.</p>
+        <h4>Mode cuisine</h4>
+        <p>Instructions étape par étape, minuteries intégrées, quantités adaptées. Du planning à l'assiette, dans la même app.</p>
         <span class="feat-tag">Step-by-step · Minuteries</span>
       </div>
 
     </div>
   </div>
 
+  <!-- WHY IT'S CREDIBLE -->
+  <div style="padding:0 24px 80px;max-width:720px;margin:0 auto;text-align:center;position:relative;z-index:10" class="rv">
+    <div class="nar-label" style="justify-content:center;margin-bottom:24px">Pourquoi c'est crédible</div>
+    <p style="font-size:15px;line-height:1.75;color:var(--t3)">Meal n'est pas un concept. C'est un produit pensé pour être lancé, avec une promesse claire, une landing page dédiée et un modèle assumé. Sortie annoncée au 2 mai 2026, essai gratuit de 10 jours puis 6&nbsp;€/mois. Stockage local, sync iCloud chiffrée de bout en bout par Apple, zéro tracking.</p>
+    <a href="https://meal-app.fr" target="_blank" class="btn bg" style="margin-top:28px;display:inline-flex">Voir le site Meal →</a>
+  </div>
+
   <!-- STACK -->
   <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
     <h3>Comment c'est construit.</h3>
-    <p class="sub">Stack technique choisie pour la qualité de l'expérience iOS et la vitesse de livraison.</p>
+    <p class="sub">Stack choisie pour la qualité de l'expérience et la rapidité d'exécution.</p>
     <div class="tech-grid">
       <div class="tech meal-tech"><div class="tech-dot" style="background:#ff9500"></div>SwiftUI</div>
       <div class="tech meal-tech"><div class="tech-dot" style="background:#ff9500"></div>Swift</div>
@@ -685,11 +725,11 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
       </div>
       <div class="res">
         <div class="res-n meal-res" data-t="200" data-s="€">0€</div>
-        <div class="res-l">Coût total</div>
+        <div class="res-l">Budget total</div>
       </div>
       <div class="res">
-        <div class="res-n meal-res">✓</div>
-        <div class="res-l">App Store ready</div>
+        <div class="res-n meal-res">2 mai</div>
+        <div class="res-l">Lancement 2026</div>
       </div>
     </div>
   </div>
@@ -698,387 +738,164 @@ footer p{font-size:11px;color:var(--t4);line-height:2.2;letter-spacing:.2px}
 <div class="div"></div>
 
 <!-- ══════════════════════════════════════
-     PROMÉTHÉE
+     LAUNCHKIT STUDIO — Studio / méthode
 ══════════════════════════════════════ -->
-<section class="proj" id="prom">
-  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 15% 0%,#0e0020,#000 55%)">
-    <div class="p-ico rv sc d1"
-      style="background:linear-gradient(145deg,#4e18a0,#bf5af2);box-shadow:0 30px 80px rgba(191,90,242,.52);animation:iconFloat 4.5s 3.2s ease-in-out infinite">🔬</div>
-    <div class="status status-wip rv d2">En développement</div>
-    <p class="p-eyebrow prom-col rv d2">Prométhée</p>
-    <h2 class="p-title prom-grad rv d3">La vérité,<br>vérifiable.</h2>
-    <p class="p-tagline rv d4">Détection d'IA. Certification. Confiance.</p>
-    <p class="p-desc rv d5">Dans un monde noyé par les deepfakes et les contenus générés par IA, Prométhée répond avec la première app d'analyse, de certification et d'évaluation du risque — pour photos comme pour documents.</p>
-    <div class="build-meta rv d5">
-      <div class="bm-item"><div class="bm-v prom-bm">Solo</div><div class="bm-l">A → Z</div></div>
-      <div class="bm-sep"></div>
-      <div class="bm-item"><div class="bm-v prom-bm">iOS</div><div class="bm-l">SwiftUI</div></div>
-      <div class="bm-sep"></div>
-      <div class="bm-item"><div class="bm-v prom-bm">En cours</div><div class="bm-l">Développement</div></div>
-    </div>
-    <div class="chips rv d6">
-      <span class="chip prom-chip">Détection deepfake</span><span class="chip prom-chip">Certification blockchain</span>
-      <span class="chip prom-chip">Score de risque</span><span class="chip prom-chip">Analyse PDF/DOCX</span>
-      <span class="chip prom-chip">Rapport légal</span><span class="chip prom-chip">API entreprise</span>
-    </div>
-  </div>
-  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
-    <div class="narrative rv">
+<section class="proj" id="launchkit">
+  <div class="lk-section rv">
+    <div class="status status-shipped rv" style="margin-bottom:32px">Studio & méthode</div>
+    <h2>LaunchKit Studio</h2>
+    <p class="lk-sub">Un cadre de production conçu pour transformer une vision produit en MVP iOS crédible.</p>
+    <p class="lk-body">LaunchKit formalise ma manière de construire : cadrer une vision, structurer un MVP iOS crédible, et livrer une première version sérieuse, propre et exploitable. Là où Meal montre un produit, LaunchKit montre une méthode — avec une forte exigence sur la qualité perçue et la capacité à évoluer.</p>
+    <div class="narrative rv" style="text-align:left;max-width:600px;margin:0 auto 40px">
       <div class="nar-cell">
-        <div class="nar-label">Le problème</div>
-        <h3>On ne sait plus distinguer le vrai du faux.</h3>
-        <p>Deepfakes, textes GPT, photos générées — la désinformation s'est industrialisée. Aucun outil grand public ne permettait de certifier l'authenticité d'un contenu de façon légale et accessible.</p>
-      </div>
-      <div class="nar-cell">
-        <div class="nar-label">Ma réponse</div>
-        <h3>Analyse, certification, score de risque — en 3 secondes.</h3>
-        <p>12 modèles IA analysent en parallèle. Le résultat est certifié cryptographiquement. Un score de risque contextualise la menace. Un rapport PDF légal est exportable instantanément.</p>
+        <div class="nar-label">Ce que ça dit de moi</div>
+        <h3>Je sais structurer une exécution.</h3>
+        <p>Cadrage précis, exécution rapide, qualité perçue élevée et livraison exploitable. C'est à la fois une vitrine de méthode et une traduction concrète de ma façon de concevoir un premier produit sérieux.</p>
       </div>
     </div>
-  </div>
-  <div class="features-title rv" style="position:relative;z-index:10">
-    <h3>Voir, certifier,<br>protéger.</h3>
-    <p>Chaque couche de l'app répond à une dimension du problème.</p>
-  </div>
-  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
-    <div class="feat-grid rv">
-      <div class="feat"><div class="feat-glow" style="background:#bf5af2"></div>
-        <div class="feat-num">01 — Analyse</div><span class="feat-ico">🔍</span>
-        <h4>Détection Multi-Modèle</h4>
-        <p>12 détecteurs IA s'exécutent en parallèle sur chaque contenu soumis. Photos, PDF, DOCX — chaque format est couvert.</p>
-        <span class="feat-tag">>97% précision · 3s</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#bf5af2"></div>
-        <div class="feat-num">02 — Certification</div><span class="feat-ico">🏛️</span>
-        <h4>Empreinte Cryptographique</h4>
-        <p>Chaque analyse génère un certificat d'authenticité avec horodatage immuable — juridiquement opposable et vérifiable.</p>
-        <span class="feat-tag">Blockchain · Légal</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#bf5af2"></div>
-        <div class="feat-num">03 — Risque</div><span class="feat-ico">⚠️</span>
-        <h4>Score de Risque Contextuel</h4>
-        <p>Désinformation, fraude documentaire, manipulation visuelle — un score chiffré avec recommandations d'action concrètes.</p>
-        <span class="feat-tag">Contextualisé · Actionnable</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#bf5af2"></div>
-        <div class="feat-num">04 — Rapport</div><span class="feat-ico">📄</span>
-        <h4>Rapport PDF Complet</h4>
-        <p>Export PDF avec zones annotées, métadonnées extraites et historique d'analyse. Prêt pour utilisation légale ou journalistique.</p>
-        <span class="feat-tag">Export PDF · Zones annotées</span>
-      </div>
-    </div>
-  </div>
-  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
-    <h3>Comment c'est construit.</h3>
-    <p class="sub">Pipeline d'analyse IA orchestré, frontend natif iOS.</p>
-    <div class="tech-grid">
-      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>SwiftUI</div>
-      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>Vision Framework</div>
-      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>Core ML</div>
-      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>Python API</div>
-      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>Orchestration IA</div>
-      <div class="tech prom-tech" style="border-color:rgba(191,90,242,.2)"><div class="tech-dot" style="background:#bf5af2"></div>PDFKit</div>
-    </div>
-  </div>
-  <div style="padding:60px 24px 100px;position:relative;z-index:10">
-    <div class="results rv">
-      <div class="res"><div class="res-n prom-res">Solo</div><div class="res-l">Développement</div></div>
-      <div class="res"><div class="res-n prom-res">SwiftUI</div><div class="res-l">Frontend natif</div></div>
-      <div class="res"><div class="res-n prom-res">En cours</div><div class="res-l">Statut projet</div></div>
+    <div class="tech-grid" style="justify-content:center">
+      <div class="tech"><div class="tech-dot" style="background:#64a0ff"></div>Cadrage produit</div>
+      <div class="tech"><div class="tech-dot" style="background:#64a0ff"></div>MVP iOS</div>
+      <div class="tech"><div class="tech-dot" style="background:#64a0ff"></div>SwiftUI</div>
+      <div class="tech"><div class="tech-dot" style="background:#64a0ff"></div>Orchestration IA</div>
+      <div class="tech"><div class="tech-dot" style="background:#64a0ff"></div>Design system</div>
     </div>
   </div>
 </section>
 <div class="div"></div>
 
 <!-- ══════════════════════════════════════
-     IRIS
+     SANDBOX — Explorations personnelles
 ══════════════════════════════════════ -->
-<section class="proj" id="iris">
-  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 85% 110%,#001528,#000 55%)">
-    <div class="p-ico rv sc d1"
-      style="background:linear-gradient(145deg,#0040c4,#0a84ff);box-shadow:0 30px 80px rgba(10,132,255,.52);animation:iconFloat 3.8s 3.5s ease-in-out infinite">🛸</div>
-    <div class="status status-wip rv d2">En développement</div>
-    <p class="p-eyebrow iris-col rv d2">Iris</p>
-    <h2 class="p-title iris-grad rv d3">Tout voir.<br>Tout contrôler.</h2>
-    <p class="p-tagline rv d4">Commandement de missions drones ultra-complet.</p>
-    <p class="p-desc rv d5">Iris est le système de commandement de missions de surveillance drone le plus abouti. Planification tactique, coordination d'essaim, analyse IA temps réel — pour les opérations qui n'ont pas droit à l'erreur.</p>
-    <div class="build-meta rv d5">
-      <div class="bm-item"><div class="bm-v iris-bm">Solo</div><div class="bm-l">A → Z</div></div>
-      <div class="bm-sep"></div>
-      <div class="bm-item"><div class="bm-v iris-bm">iOS</div><div class="bm-l">SwiftUI</div></div>
-      <div class="bm-sep"></div>
-      <div class="bm-item"><div class="bm-v iris-bm">En cours</div><div class="bm-l">Développement</div></div>
-    </div>
-    <div class="chips rv d6">
-      <span class="chip iris-chip">64 drones</span><span class="chip iris-chip">Carte 3D temps réel</span>
-      <span class="chip iris-chip">Détection IA</span><span class="chip iris-chip">Chiffrement E2E</span>
-      <span class="chip iris-chip">Mode offline</span><span class="chip iris-chip">Rapport automatique</span>
-    </div>
+<section id="sandbox">
+  <div class="sandbox-intro rv">
+    <h2>Sandbox personnelles</h2>
+    <p>Des explorations produit et techniques menées en parallèle, chacune centrée sur une contrainte ou un sujet précis.</p>
   </div>
-  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
-    <div class="narrative rv">
-      <div class="nar-cell">
-        <div class="nar-label">Le problème</div>
-        <h3>Les opérations de surveillance drone manquent d'un vrai OS tactique.</h3>
-        <p>Coordonner plusieurs drones, analyser les flux en direct, maintenir la sécurité des communications et générer des rapports — aucun outil existant ne centralise tout ça dans une interface cohérente et mobile.</p>
+
+  <div style="padding:0 24px 96px;position:relative;z-index:10">
+    <div class="sandbox-grid rv">
+
+      <!-- PROMÉTHÉE -->
+      <div class="sb-card">
+        <span class="sb-ico">🔬</span>
+        <div class="sb-label" style="color:#bf5af2">Sandbox · IA on-device</div>
+        <h3 style="color:#bf5af2">Prométhée</h3>
+        <p>Sandbox centrée sur l'IA on-device et l'offline-first. Le projet me permet d'explorer une expérience plus autonome, plus privée et plus résiliente — en m'intéressant à l'intégration locale de modèles, à la performance perçue et à la continuité d'usage hors connexion.</p>
+        <div class="sb-chips">
+          <span class="sb-chip" style="border-color:rgba(191,90,242,.2);color:#bf5af2">Core ML</span>
+          <span class="sb-chip" style="border-color:rgba(191,90,242,.2);color:#bf5af2">Vision</span>
+          <span class="sb-chip" style="border-color:rgba(191,90,242,.2);color:#bf5af2">Offline-first</span>
+        </div>
       </div>
-      <div class="nar-cell">
-        <div class="nar-label">Ma réponse</div>
-        <h3>Un système de commandement complet. Sur iPhone.</h3>
-        <p>Carte tactique 3D en temps réel, contrôle d'essaim jusqu'à 64 drones avec anti-collision IA, détection d'objets live, communications E2E chiffrées et rapport de mission auto-généré.</p>
+
+      <!-- IRIS -->
+      <div class="sb-card">
+        <span class="sb-ico">🛸</span>
+        <div class="sb-label" style="color:#0a84ff">Sandbox · Mission control</div>
+        <h3 style="color:#0a84ff">Iris</h3>
+        <p>Sandbox orientée mission control pour flotte de drones. Le projet explore la conception d'une interface de supervision complète : gestion de devices, visualisation cartographique en direct, lisibilité des états terrain et structuration d'un cockpit de contrôle.</p>
+        <div class="sb-chips">
+          <span class="sb-chip" style="border-color:rgba(10,132,255,.2);color:#0a84ff">MapKit 3D</span>
+          <span class="sb-chip" style="border-color:rgba(10,132,255,.2);color:#0a84ff">WebSocket</span>
+          <span class="sb-chip" style="border-color:rgba(10,132,255,.2);color:#0a84ff">CryptoKit</span>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="features-title rv" style="position:relative;z-index:10">
-    <h3>Commandement.<br>Précision. Contrôle.</h3>
-    <p>Chaque module répond à une exigence opérationnelle critique.</p>
-  </div>
-  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
-    <div class="feat-grid rv">
-      <div class="feat"><div class="feat-glow" style="background:#0a84ff"></div>
-        <div class="feat-num">01 — Carte</div><span class="feat-ico">🗺️</span>
-        <h4>Carte Tactique 3D Live</h4>
-        <p>Vue opérationnelle en temps réel. Trajectoires, zones interdites, altitudes et alertes géolocalisées sur une carte 3D.</p>
-        <span class="feat-tag">Temps réel · 3D</span>
+
+      <!-- PIGEON -->
+      <div class="sb-card">
+        <span class="sb-ico">🕊️</span>
+        <div class="sb-label" style="color:#30d158">Sandbox · Secure messaging</div>
+        <h3 style="color:#30d158">Pigeon</h3>
+        <p>Sandbox dédiée aux problématiques de messagerie sécurisée. Le projet me sert à explorer le chiffrement, la continuité multi-device, la fiabilité d'échange et les contraintes d'une expérience de communication privée et techniquement robuste.</p>
+        <div class="sb-chips">
+          <span class="sb-chip" style="border-color:rgba(48,209,88,.2);color:#30d158">Double Ratchet</span>
+          <span class="sb-chip" style="border-color:rgba(48,209,88,.2);color:#30d158">X3DH</span>
+          <span class="sb-chip" style="border-color:rgba(48,209,88,.2);color:#30d158">P2P</span>
+        </div>
       </div>
-      <div class="feat"><div class="feat-glow" style="background:#0a84ff"></div>
-        <div class="feat-num">02 — Essaim</div><span class="feat-ico">🤖</span>
-        <h4>Contrôle d'Essaim Autonome</h4>
-        <p>Jusqu'à 64 drones coordonnés simultanément. Anti-collision IA intégré. Formation automatique et gestion des pannes en temps réel.</p>
-        <span class="feat-tag">64 drones · Anti-collision IA</span>
+
+      <!-- FAMILY -->
+      <div class="sb-card">
+        <span class="sb-ico">🏠</span>
+        <div class="sb-label" style="color:#ff375f">Sandbox · Cross-device sync</div>
+        <h3 style="color:#ff375f">Family</h3>
+        <p>Sandbox consacrée à la continuité d'usage entre plusieurs appareils dans un cadre familial. J'y explore la synchronisation cross-device, la persistance d'état, les contraintes de partage et l'adaptation d'une logique produit à des usages distribués.</p>
+        <div class="sb-chips">
+          <span class="sb-chip" style="border-color:rgba(255,55,95,.2);color:#ff375f">CloudKit</span>
+          <span class="sb-chip" style="border-color:rgba(255,55,95,.2);color:#ff375f">SwiftData</span>
+          <span class="sb-chip" style="border-color:rgba(255,55,95,.2);color:#ff375f">EventKit</span>
+        </div>
       </div>
-      <div class="feat"><div class="feat-glow" style="background:#0a84ff"></div>
-        <div class="feat-num">03 — Analyse</div><span class="feat-ico">👁️</span>
-        <h4>Détection Temps Réel</h4>
-        <p>Reconnaissance d'objets, tracking de cibles mobiles et alertes intelligentes. Flux vidéo analysé frame par frame par IA.</p>
-        <span class="feat-tag">Object detection · Tracking</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#0a84ff"></div>
-        <div class="feat-num">04 — Sécurité</div><span class="feat-ico">🔒</span>
-        <h4>OPSEC Totale</h4>
-        <p>Communications E2E chiffrées. Clés éphémères par mission. Fonctionnement offline complet. Zéro trace résiduelle post-mission.</p>
-        <span class="feat-tag">E2E · Clés éphémères · Offline</span>
-      </div>
-    </div>
-  </div>
-  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
-    <h3>Comment c'est construit.</h3>
-    <p class="sub">Interface de commandement iOS native, pipeline IA embarqué.</p>
-    <div class="tech-grid">
-      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>SwiftUI</div>
-      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>MapKit 3D</div>
-      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>Core ML</div>
-      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>WebSocket</div>
-      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>CryptoKit</div>
-      <div class="tech" style="border-color:rgba(10,132,255,.2)"><div class="tech-dot" style="background:#0a84ff"></div>Vision</div>
-    </div>
-  </div>
-  <div style="padding:60px 24px 100px;position:relative;z-index:10">
-    <div class="results rv">
-      <div class="res"><div class="res-n iris-res">Solo</div><div class="res-l">Développement</div></div>
-      <div class="res"><div class="res-n iris-res">SwiftUI</div><div class="res-l">Frontend natif</div></div>
-      <div class="res"><div class="res-n iris-res">En cours</div><div class="res-l">Statut projet</div></div>
+
     </div>
   </div>
 </section>
 <div class="div"></div>
 
-<!-- ══════════════════════════════════════
-     PIGEON
-══════════════════════════════════════ -->
-<section class="proj" id="pig">
-  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 15% 0%,#001a08,#000 55%)">
-    <div class="p-ico rv sc d1"
-      style="background:linear-gradient(145deg,#0a6020,#30d158);box-shadow:0 30px 80px rgba(48,209,88,.48);animation:iconFloat 4.2s 3.8s ease-in-out infinite">🕊️</div>
-    <div class="status status-wip rv d2">En développement</div>
-    <p class="p-eyebrow pig-col rv d2">Pigeon Secure Chat</p>
-    <h2 class="p-title pig-grad rv d3">Parler.<br>Librement.</h2>
-    <p class="p-tagline rv d4">La messagerie qui ne sait rien de vous.</p>
-    <p class="p-desc rv d5">Pigeon Secure Chat redéfinit la confidentialité numérique. Chiffrement de niveau militaire, zéro métadonnée, identité sans numéro de téléphone — pour ceux qui ne font aucun compromis.</p>
-    <div class="build-meta rv d5">
-      <div class="bm-item"><div class="bm-v pig-bm">Solo</div><div class="bm-l">A → Z</div></div>
-      <div class="bm-sep"></div>
-      <div class="bm-item"><div class="bm-v pig-bm">iOS</div><div class="bm-l">SwiftUI</div></div>
-      <div class="bm-sep"></div>
-      <div class="bm-item"><div class="bm-v pig-bm">En cours</div><div class="bm-l">Développement</div></div>
-    </div>
-    <div class="chips rv d6">
-      <span class="chip pig-chip">Double Ratchet</span><span class="chip pig-chip">Zéro métadonnée</span>
-      <span class="chip pig-chip">Messages éphémères</span><span class="chip pig-chip">Anonymat complet</span>
-      <span class="chip pig-chip">P2P décentralisé</span><span class="chip pig-chip">Open source</span>
-    </div>
+<!-- ══════════ MÉTHODE ══════════ -->
+<section style="padding:96px 24px;max-width:720px;margin:0 auto;position:relative;z-index:10">
+  <div class="sandbox-intro rv" style="padding:0 0 48px">
+    <h2>Ma manière de construire</h2>
+    <p>Une approche structurée, du problème au lancement.</p>
   </div>
-  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
-    <div class="narrative rv">
-      <div class="nar-cell">
-        <div class="nar-label">Le problème</div>
-        <h3>Signal est encore trop lié à un numéro. Telegram pas assez sécurisé.</h3>
-        <p>Toutes les messageries "sécurisées" requièrent un numéro de téléphone, collectent des métadonnées ou dépendent d'un serveur central — autant de vecteurs d'attaque et de surveillance.</p>
-      </div>
-      <div class="nar-cell">
-        <div class="nar-label">Ma réponse</div>
-        <h3>Zéro numéro. Zéro serveur central. Zéro compromis.</h3>
-        <p>Identité purement cryptographique, Double Ratchet pour chaque message, réseau P2P optionnel, messages éphémères et aucune métadonnée collectée — ni par l'app, ni par les serveurs.</p>
-      </div>
+  <div style="display:flex;flex-direction:column;gap:32px" class="rv">
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div style="font-size:11px;font-weight:700;color:var(--t4);letter-spacing:2px;min-width:24px;padding-top:2px">01</div>
+      <div><h4 style="font-size:16px;font-weight:600;color:var(--t1);margin-bottom:6px">Clarifier</h4>
+        <p style="font-size:14px;line-height:1.72;color:var(--t3)">Comprendre la friction réelle, simplifier la promesse, décider ce qui mérite d'exister.</p></div>
     </div>
-  </div>
-  <div class="features-title rv" style="position:relative;z-index:10">
-    <h3>Sécurité.<br>Par conception.</h3>
-    <p>Chaque couche est pensée pour protéger, pas pour surveiller.</p>
-  </div>
-  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
-    <div class="feat-grid rv">
-      <div class="feat"><div class="feat-glow" style="background:#30d158"></div>
-        <div class="feat-num">01 — Chiffrement</div><span class="feat-ico">🔐</span>
-        <h4>Chiffrement Militaire</h4>
-        <p>Double Ratchet Algorithm + X3DH. Chaque message a sa propre clé éphémère. Même en cas de compromission d'une clé, les messages passés restent protégés.</p>
-        <span class="feat-tag">Double Ratchet · X3DH · PFS</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#30d158"></div>
-        <div class="feat-num">02 — Ephémère</div><span class="feat-ico">👻</span>
-        <h4>Messages Éphémères</h4>
-        <p>Disparition configurable de 5 secondes à 1 an. Suppression cryptographique garantie côté serveur et client — irrécupérable.</p>
-        <span class="feat-tag">5s → 1 an · Suppression garantie</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#30d158"></div>
-        <div class="feat-num">03 — Identité</div><span class="feat-ico">🕶️</span>
-        <h4>Anonymat Total</h4>
-        <p>Aucun numéro, aucun email, aucun nom réel. L'identité est une clé cryptographique générée localement. Zéro lien avec l'identité réelle.</p>
-        <span class="feat-tag">Clé locale · Zéro PII</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#30d158"></div>
-        <div class="feat-num">04 — Réseau</div><span class="feat-ico">🌐</span>
-        <h4>Architecture Décentralisée</h4>
-        <p>Mode P2P intégré, aucun point de défaillance central, résistant à la censure et aux coupures réseau. Le réseau reste fonctionnel sans infrastructure centrale.</p>
-        <span class="feat-tag">P2P · Anti-censure · Résilient</span>
-      </div>
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div style="font-size:11px;font-weight:700;color:var(--t4);letter-spacing:2px;min-width:24px;padding-top:2px">02</div>
+      <div><h4 style="font-size:16px;font-weight:600;color:var(--t1);margin-bottom:6px">Structurer</h4>
+        <p style="font-size:14px;line-height:1.72;color:var(--t3)">Cadrer le parcours, la logique produit et le périmètre utile. Compréhensible et exploitable dès la v1.</p></div>
     </div>
-  </div>
-  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
-    <h3>Comment c'est construit.</h3>
-    <p class="sub">Cryptographie native iOS, protocole Signal implémenté from scratch.</p>
-    <div class="tech-grid">
-      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>SwiftUI</div>
-      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>CryptoKit</div>
-      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>Network.framework</div>
-      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>Multipeer</div>
-      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>X3DH Protocol</div>
-      <div class="tech" style="border-color:rgba(48,209,88,.2)"><div class="tech-dot" style="background:#30d158"></div>Double Ratchet</div>
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div style="font-size:11px;font-weight:700;color:var(--t4);letter-spacing:2px;min-width:24px;padding-top:2px">03</div>
+      <div><h4 style="font-size:16px;font-weight:600;color:var(--t1);margin-bottom:6px">Construire</h4>
+        <p style="font-size:14px;line-height:1.72;color:var(--t3)">Développer avec une attention forte sur l'expérience, la qualité perçue et la cohérence Apple.</p></div>
     </div>
-  </div>
-  <div style="padding:60px 24px 100px;position:relative;z-index:10">
-    <div class="results rv">
-      <div class="res"><div class="res-n pig-res">Solo</div><div class="res-l">Développement</div></div>
-      <div class="res"><div class="res-n pig-res">SwiftUI</div><div class="res-l">Frontend natif</div></div>
-      <div class="res"><div class="res-n pig-res">En cours</div><div class="res-l">Statut projet</div></div>
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div style="font-size:11px;font-weight:700;color:var(--t4);letter-spacing:2px;min-width:24px;padding-top:2px">04</div>
+      <div><h4 style="font-size:16px;font-weight:600;color:var(--t1);margin-bottom:6px">Affiner</h4>
+        <p style="font-size:14px;line-height:1.72;color:var(--t3)">Réduire le bruit, simplifier les transitions, rendre les choix plus évidents.</p></div>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div style="font-size:11px;font-weight:700;color:var(--t4);letter-spacing:2px;min-width:24px;padding-top:2px">05</div>
+      <div><h4 style="font-size:16px;font-weight:600;color:var(--t1);margin-bottom:6px">Lancer</h4>
+        <p style="font-size:14px;line-height:1.72;color:var(--t3)">Landing page, clarté de l'offre, préparation du lancement, cohérence globale.</p></div>
     </div>
   </div>
 </section>
 <div class="div"></div>
 
-<!-- ══════════════════════════════════════
-     FAMILY
-══════════════════════════════════════ -->
-<section class="proj" id="fam">
-  <div class="proj-reveal" style="background:radial-gradient(ellipse 120% 80% at 15% 110%,#1a0008,#000 55%)">
-    <div class="p-ico rv sc d1"
-      style="background:linear-gradient(145deg,#8c0025,#ff375f);box-shadow:0 30px 80px rgba(255,55,95,.48);animation:iconFloat 4.8s 4s ease-in-out infinite">🏠</div>
-    <div class="status status-wip rv d2">En développement</div>
-    <p class="p-eyebrow fam-col rv d2">Family</p>
-    <h2 class="p-title fam-grad rv d3">Vivre.<br>Ensemble.</h2>
-    <p class="p-tagline rv d4">L'OS de votre famille.</p>
-    <p class="p-desc rv d5">Family est le premier système d'exploitation conçu pour la cellule familiale. Calendrier, tâches, budget, localisation et mémoire commune — tout ce qui fait tourner une famille, dans une seule app magnifique.</p>
-    <div class="build-meta rv d5">
-      <div class="bm-item"><div class="bm-v fam-bm">Solo</div><div class="bm-l">A → Z</div></div>
-      <div class="bm-sep"></div>
-      <div class="bm-item"><div class="bm-v fam-bm">iOS</div><div class="bm-l">SwiftUI</div></div>
-      <div class="bm-sep"></div>
-      <div class="bm-item"><div class="bm-v fam-bm">En cours</div><div class="bm-l">Développement</div></div>
-    </div>
-    <div class="chips rv d6">
-      <span class="chip fam-chip">Calendrier partagé</span><span class="chip fam-chip">Tâches & chores</span>
-      <span class="chip fam-chip">Budget familial</span><span class="chip fam-chip">Localisation live</span>
-      <span class="chip fam-chip">Album partagé</span><span class="chip fam-chip">Profils enfants</span>
-    </div>
-  </div>
-  <div style="padding:0 24px 80px;max-width:900px;margin:0 auto;position:relative;z-index:10">
-    <div class="narrative rv">
-      <div class="nar-cell">
-        <div class="nar-label">Le problème</div>
-        <h3>Organiser une famille, c'est gérer 10 apps différentes.</h3>
-        <p>Agenda sur une app, budget sur une autre, localisation sur une troisième, listes de tâches éparpillées — aucun outil ne centralise la logistique familiale de façon fluide et belle.</p>
-      </div>
-      <div class="nar-cell">
-        <div class="nar-label">Ma réponse</div>
-        <h3>Un OS familial. Un seul endroit. Tout dedans.</h3>
-        <p>Calendrier partagé intelligent, gestion des tâches avec système de récompenses pour les enfants, budget familial, localisation temps réel et album de souvenirs partagé — dans une seule app cohérente.</p>
-      </div>
-    </div>
-  </div>
-  <div class="features-title rv" style="position:relative;z-index:10">
-    <h3>La famille,<br>organisée.</h3>
-    <p>Chaque module répond à un besoin familial quotidien.</p>
-  </div>
-  <div style="padding:0 24px 100px;max-width:960px;margin:0 auto;position:relative;z-index:10">
-    <div class="feat-grid rv">
-      <div class="feat"><div class="feat-glow" style="background:#ff375f"></div>
-        <div class="feat-num">01 — Agenda</div><span class="feat-ico">📆</span>
-        <h4>Calendrier Familial Intelligent</h4>
-        <p>Disponibilités croisées automatiques, rappels contextuels, synchronisation instantanée entre tous les membres. Plus jamais de double réservation.</p>
-        <span class="feat-tag">Sync instantanée · Rappels IA</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#ff375f"></div>
-        <div class="feat-num">02 — Tâches</div><span class="feat-ico">✅</span>
-        <h4>Chores & Récompenses</h4>
-        <p>Répartition équitable automatique des tâches du foyer. Système de points et récompenses pour motiver les enfants et valoriser leur contribution.</p>
-        <span class="feat-tag">Gamification · Équitable</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#ff375f"></div>
-        <div class="feat-num">03 — Budget</div><span class="feat-ico">💰</span>
-        <h4>Finance Familiale</h4>
-        <p>Dépenses communes trackées en temps réel, argent de poche des enfants géré, objectifs d'épargne partagés. Visualisation claire et alertes intelligentes.</p>
-        <span class="feat-tag">Dépenses communes · Épargne</span>
-      </div>
-      <div class="feat"><div class="feat-glow" style="background:#ff375f"></div>
-        <div class="feat-num">04 — Localisation</div><span class="feat-ico">📍</span>
-        <h4>Cercle de Confiance</h4>
-        <p>Localisation temps réel des membres du cercle de confiance. Zones sûres configurables, alertes d'arrivée automatiques, mode discret pour les ados.</p>
-        <span class="feat-tag">Zones sûres · Alertes auto</span>
-      </div>
-    </div>
-  </div>
-  <div class="stack-section rv" style="border-top:1px solid rgba(255,255,255,.06)">
-    <h3>Comment c'est construit.</h3>
-    <p class="sub">Écosystème familial synchronisé, natif iOS.</p>
-    <div class="tech-grid">
-      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>SwiftUI</div>
-      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>CloudKit</div>
-      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>CoreLocation</div>
-      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>EventKit</div>
-      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>SwiftData</div>
-      <div class="tech" style="border-color:rgba(255,55,95,.2)"><div class="tech-dot" style="background:#ff375f"></div>Notifications</div>
-    </div>
-  </div>
-  <div style="padding:60px 24px 100px;position:relative;z-index:10">
-    <div class="results rv">
-      <div class="res"><div class="res-n fam-res">Solo</div><div class="res-l">Développement</div></div>
-      <div class="res"><div class="res-n fam-res">SwiftUI</div><div class="res-l">Frontend natif</div></div>
-      <div class="res"><div class="res-n fam-res">En cours</div><div class="res-l">Statut projet</div></div>
-    </div>
-  </div>
+<!-- ══════════ ABOUT ══════════ -->
+<section style="padding:96px 24px;max-width:640px;margin:0 auto;text-align:center;position:relative;z-index:10" class="rv">
+  <div class="nar-label" style="justify-content:center;margin-bottom:24px">À propos</div>
+  <p style="font-size:clamp(17px,2vw,20px);font-weight:300;line-height:1.72;color:var(--t2);margin-bottom:20px">Je m'intéresse aux produits qui rendent une action plus simple, plus lisible ou plus calme.</p>
+  <p style="font-size:15px;line-height:1.75;color:var(--t3);margin-bottom:32px">Mon point d'équilibre se situe à l'intersection du produit, de l'exécution, de l'expérience utilisateur et de la vision. Je travaille avec une sensibilité forte pour l'écosystème Apple, ses usages, sa sobriété et son niveau d'exigence sur la qualité perçue.</p>
 </section>
 <div class="div"></div>
+
+<!-- ══════════ CONTACT ══════════ -->
+<section style="padding:96px 24px 120px;text-align:center;position:relative;z-index:10" class="rv">
+  <h2 style="font-size:clamp(30px,4.5vw,48px);font-weight:700;letter-spacing:-1.5px;margin-bottom:14px">Parlons produit.</h2>
+  <p style="font-size:15px;color:var(--t3);line-height:1.72;max-width:520px;margin:0 auto 36px">Que ce soit pour un poste, une collaboration ou un MVP iOS, je suis intéressé par les projets qui demandent de la clarté, de la structure et une vraie exigence d'exécution.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="mailto:contact@aubin.dev" class="btn bw">Me contacter</a>
+    <a href="https://meal-app.fr" target="_blank" class="btn bg">Voir Meal →</a>
+    <a href="#launchkit" class="btn bg">Découvrir LaunchKit →</a>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
   <div class="ft-links">
-    <a href="#meal">Meal</a><a href="#prom">Prométhée</a><a href="#iris">Iris</a>
-    <a href="#pig">Pigeon</a><a href="#fam">Family</a>
+    <a href="#meal">Meal</a><a href="#launchkit">LaunchKit</a><a href="#sandbox">Sandbox</a>
     <a href="mailto:contact@aubin.dev">Contact</a>
-    <a href="#">GitHub</a><a href="#">LinkedIn</a>
   </div>
   <p>Copyright &copy; 2026 Aubin. Tous droits réservés.<br>
-    Product Builder · SwiftUI · Orchestration IA</p>
+    Product Builder iOS · SwiftUI · Orchestration IA</p>
 </footer>
 
 <style>
@@ -1113,7 +930,7 @@ window.addEventListener('load',()=>{
 });
 
 /* ══ HERO TITLE ══ */
-const lines=['Des apps','\nqui changent tout.'];
+const lines=['Product','\nBuilder iOS.'];
 const hh=document.getElementById('hh');
 let delay=1.0;
 lines.forEach(line=>{
@@ -1143,7 +960,6 @@ function animNum(el,target,suffix,dur=1200){
 setTimeout(()=>{
   animNum(document.getElementById('kpi1'),180,'h',1000);
   animNum(document.getElementById('kpi2'),200,'€',1000);
-  animNum(document.getElementById('kpi3'),5,' projets',900);
 },2200);
 
 /* ══ PARTICLES ══ */
@@ -1198,10 +1014,8 @@ document.addEventListener('mousemove',e=>{pmx=e.clientX;pmy=e.clientY});
 const GRADS={
   hero:'radial-gradient(ellipse 100% 60% at 50% 0%,#080820,#000)',
   meal:'radial-gradient(ellipse 130% 80% at 85% 105%,#180b00,#000 50%)',
-  prom:'radial-gradient(ellipse 130% 80% at 10% 0%,#0e001f,#000 50%)',
-  iris:'radial-gradient(ellipse 130% 80% at 88% 105%,#001328,#000 50%)',
-  pig:'radial-gradient(ellipse 130% 80% at 10% 0%,#001608,#000 50%)',
-  fam:'radial-gradient(ellipse 130% 80% at 12% 105%,#1a0008,#000 50%)',
+  launchkit:'radial-gradient(ellipse 100% 60% at 50% 0%,#0a1028,#000 50%)',
+  sandbox:'radial-gradient(ellipse 100% 60% at 50% 50%,#0a0a14,#000 50%)',
 };
 const GBG=document.getElementById('gbg');
 function setScene(k){
@@ -1214,13 +1028,13 @@ const secObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting)return;
     const id=e.target.id||'';
-    const k={'meal':'meal','prom':'prom','iris':'iris','pig':'pig','fam':'fam','top':'hero'}[id]||'hero';
+    const k={'meal':'meal','launchkit':'launchkit','sandbox':'sandbox','top':'hero'}[id]||'hero';
     setScene(k);
     document.querySelectorAll('.nr a').forEach(a=>a.classList.toggle('on',a.dataset.s===id));
     document.querySelectorAll('.si').forEach(s=>s.classList.toggle('on',s.dataset.s===id));
   });
 },{threshold:.25});
-['top','meal','prom','iris','pig','fam'].forEach(id=>{
+['top','meal','launchkit','sandbox'].forEach(id=>{
   const el=document.getElementById(id);if(el)secObs.observe(el);
 });
 
